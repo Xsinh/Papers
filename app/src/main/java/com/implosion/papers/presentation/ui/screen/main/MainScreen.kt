@@ -1,61 +1,56 @@
 package com.implosion.papers.presentation.ui.screen.main
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.implosion.papers.R
+import com.implosion.papers.presentation.navigation.NavigationScreen
 import com.implosion.papers.presentation.ui.theme.PapersTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = null) {
+    val viewModel: MainViewModel = koinViewModel()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadNotes()
+    }
+
     PapersTheme {
-        Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = { /* Обработчик нажатия */ }) {
-                    Icon(Icons.Filled.Create, contentDescription = "Добавить")
-                }
-            },
-            content = { paddingValues ->
-                LazyListContent(
-                    modifier = modifier
-                        .padding(paddingValues)
-                        .fillMaxSize(),
-                    paddingValues = paddingValues
+        Scaffold(floatingActionButton = {
+            FloatingActionButton(onClick = {
+                navController?.navigate(NavigationScreen.DetailsNote.route)
+            }) {
+                Icon(
+                    Icons.Filled.Create,
+                    contentDescription = stringResource(R.string.description_add)
                 )
             }
-        )
-    }
-}
-
-@Composable
-fun LazyListContent(
-    modifier: Modifier,
-    paddingValues: PaddingValues
-) {
-    val itemsList = List(100) { "Элемент $it" }
-    LazyColumn(
-        contentPadding = paddingValues,
-        modifier = modifier
-    ) {
-        items(itemsList) { item ->
-            Text(text = item, modifier = Modifier.padding(16.dp))
-        }
+        }, content = { paddingValues ->
+            LazyListContent(
+                modifier = modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                paddingValues = paddingValues,
+                noteList = viewModel.noteList.collectAsState().value
+            )
+        })
     }
 }
 
 @Preview
 @Composable
-fun MainScreenPreview() {
+private fun MainScreenPreview() {
     MainScreen()
 }

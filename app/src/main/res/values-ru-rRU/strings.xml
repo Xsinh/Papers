@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Заметки</string>
+    <string name="title_empty_notes">Пока нет заметок</string>
+    <string name="title_loading">Ожидайте...</string>
+    <string name="label_write_down_a_note">Запишите заметку</string>
+    <string name="description_add">Добавить</string>
+    <string name="title_write_down">Записать</string>
+</resources>

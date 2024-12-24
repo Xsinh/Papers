@@ -21,4 +21,7 @@ interface NoteDao {
     //Надо подумать как это сделать при dynamic delivery
     @Query("SELECT * FROM notes_table WHERE folderId = :folderId")
     suspend fun getNotesByFolder(folderId: Int): List<NoteEntity>
+
+    @Query("SELECT * FROM notes_table")
+    suspend fun getAllNotes(): List<NoteEntity>
 }
