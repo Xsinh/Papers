@@ -10,7 +10,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.implosion.towntime"
+        applicationId = "com.implosion.papers"
         minSdk = 26
 
         targetSdk = 35

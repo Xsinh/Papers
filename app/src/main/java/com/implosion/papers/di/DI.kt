@@ -1,5 +1,7 @@
 package com.implosion.papers.di
 
-//val modulesList = listOf(
-//
-//)
+import com.implosion.papers.data.database.di.databaseModule
+
+val modulesList = listOf(
+    databaseModule
+)
