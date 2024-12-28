@@ -6,6 +6,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -13,6 +14,8 @@ import com.implosion.papers.presentation.navigation.NavigationScreen
 import com.implosion.papers.presentation.ui.screen.details.NoteDetailReadComponent
 import com.implosion.papers.presentation.ui.screen.details.NoteDetailsViewModel
 import com.implosion.papers.presentation.ui.theme.PapersTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -25,6 +28,7 @@ fun NoteDetailsReadScreen(
 ) {
     val viewModel: NoteDetailsViewModel = koinViewModel()
     val bottomSheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
 
     noteId?.let { id ->
         viewModel.getNote(id)
@@ -40,9 +44,12 @@ fun NoteDetailsReadScreen(
                                 modifier = modifier,
                                 note = note,
                                 onButtonClick = {
-                                    navController?.navigate("${NavigationScreen.DetailsEditNote.route}/${noteId}")
+                                    scope.launch(Dispatchers.Main) {
+                                        bottomSheetState.hide()
+                                        navController?.navigate("${NavigationScreen.DetailsEditNote.route}/${noteId}")
+                                    }
                                 })
-                    }
+                        }
                 },
                 onDismissRequest = {
                     navController?.navigate(NavigationScreen.Main.route)
@@ -54,6 +61,6 @@ fun NoteDetailsReadScreen(
 
 @Preview
 @Composable
-private fun NoteDetailsReadScreenPreview(){
+private fun NoteDetailsReadScreenPreview() {
     NoteDetailsReadScreen()
 }

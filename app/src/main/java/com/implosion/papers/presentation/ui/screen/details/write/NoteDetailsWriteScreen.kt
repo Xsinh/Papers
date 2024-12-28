@@ -28,16 +28,19 @@ fun NoteDetailsWriteScreen(modifier: Modifier = Modifier, navController: NavCont
     val bottomSheetState = rememberModalBottomSheetState(
         confirmValueChange = {
             it != SheetValue.Hidden
-        }
+        },
+        skipPartiallyExpanded = true
     )
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+        bottomSheetState.expand()
     }
 
     PapersTheme {
         ModalBottomSheet(
+            modifier = Modifier,
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             sheetState = bottomSheetState,
             content = {
