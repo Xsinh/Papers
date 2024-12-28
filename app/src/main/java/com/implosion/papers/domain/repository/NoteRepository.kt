@@ -9,4 +9,6 @@ interface NoteRepository {
     suspend fun getAllNotes(): List<NoteModel>
 
     suspend fun getNote(id: Int): NoteModel
+
+    suspend fun updateNote(note: NoteModel)
 }

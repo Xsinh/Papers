@@ -37,4 +37,14 @@ class NoteDetailsViewModel(
             _note.emit(noteRepository.getNote(noteId))
         }
     }
+
+    fun editNote(content: String) {
+        viewModelScope.launch {
+            _note.value?.copy()?.let { note ->
+                noteRepository.updateNote(
+                    note.copy(content = content)
+                )
+            }
+        }
+    }
 }

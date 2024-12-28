@@ -30,7 +30,7 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
     PapersTheme {
         Scaffold(floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController?.navigate(NavigationScreen.DetailsNote.route)
+                navController?.navigate(NavigationScreen.DetailsWriteNote.route)
             }) {
                 Icon(
                     Icons.Filled.Create,

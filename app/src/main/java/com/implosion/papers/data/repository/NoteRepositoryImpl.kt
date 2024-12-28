@@ -24,4 +24,8 @@ class NoteRepositoryImpl(
     override suspend fun getNote(id: Int): NoteModel {
         return database.noteDao().getNoteById(id).toDomain()
     }
+
+    override suspend fun updateNote(note: NoteModel) {
+        database.noteDao().update(note = note.toDTO())
+    }
 }

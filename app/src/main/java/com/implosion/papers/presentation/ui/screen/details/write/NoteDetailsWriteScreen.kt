@@ -1,4 +1,4 @@
-package com.implosion.papers.presentation.ui.screen.details
+package com.implosion.papers.presentation.ui.screen.details.write
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -14,13 +14,15 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.implosion.papers.presentation.navigation.NavigationScreen
+import com.implosion.papers.presentation.ui.screen.details.NoteDetailCreateComponent
+import com.implosion.papers.presentation.ui.screen.details.NoteDetailsViewModel
 import com.implosion.papers.presentation.ui.theme.PapersTheme
 import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun NoteDetailsScreen(modifier: Modifier = Modifier, navController: NavController? = null) {
+fun NoteDetailsWriteScreen(modifier: Modifier = Modifier, navController: NavController? = null) {
     val viewModel: NoteDetailsViewModel = koinViewModel()
 
     val bottomSheetState = rememberModalBottomSheetState(
@@ -61,5 +63,5 @@ fun NoteDetailsScreen(modifier: Modifier = Modifier, navController: NavControlle
 @Preview
 @Composable
 fun NoteDetailsScreenPreview() {
-    NoteDetailsScreen()
+    NoteDetailsWriteScreen()
 }

@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,9 +33,14 @@ import com.implosion.papers.presentation.ui.theme.Typography
 fun NoteDetailCreateComponent(
     modifier: Modifier = Modifier,
     onButtonClick: (String) -> Unit,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    noteText: String = "",
 ) {
-    var noteText by remember { mutableStateOf("") }
+    var noteText by remember { mutableStateOf(noteText) }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     Column(
         modifier = modifier
@@ -88,6 +94,7 @@ fun NoteDetailReadComponent(
     ) {
         Text(
             modifier = Modifier
+                .padding(16.dp)
                 .wrapContentHeight()
                 .fillMaxWidth(),
             text = note,
