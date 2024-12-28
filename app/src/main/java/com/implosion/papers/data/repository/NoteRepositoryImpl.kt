@@ -20,4 +20,8 @@ class NoteRepositoryImpl(
                 noteEntity.toDomain()
             }
     }
+
+    override suspend fun getNote(id: Int): NoteModel {
+        return database.noteDao().getNoteById(id).toDomain()
+    }
 }

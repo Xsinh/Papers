@@ -43,7 +43,10 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                     .padding(paddingValues)
                     .fillMaxSize(),
                 paddingValues = paddingValues,
-                noteList = viewModel.noteList.collectAsState().value
+                noteList = viewModel.noteList.collectAsState().value,
+                onNoteClick = { noteId ->
+                    navController?.navigate("${NavigationScreen.DetailsReadNote.route}/${noteId}")
+                }
             )
         })
     }

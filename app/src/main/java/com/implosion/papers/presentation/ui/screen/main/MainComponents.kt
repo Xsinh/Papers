@@ -1,5 +1,6 @@
 package com.implosion.papers.presentation.ui.screen.main
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.implosion.papers.R
 import com.implosion.papers.domain.model.NoteModel
 import com.implosion.papers.presentation.ui.theme.Typography
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
 
@@ -31,7 +31,8 @@ import kotlinx.coroutines.delay
 fun LazyListContent(
     modifier: Modifier,
     paddingValues: PaddingValues,
-    noteList: List<NoteModel>
+    noteList: List<NoteModel>,
+    onNoteClick: (Int) -> Unit,
 ) {
     val itemsList = noteList
 
@@ -42,12 +43,14 @@ fun LazyListContent(
             contentPadding = paddingValues,
             modifier = modifier
         ) {
-
             items(itemsList) { item ->
                 Text(
                     text = item.content, maxLines = 3, modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
+                        .clickable {
+                            item.noteId?.let { onNoteClick.invoke(it) }
+                        }
                 )
             }
         }
@@ -90,7 +93,8 @@ private fun LazyListContentPreview() {
     LazyListContent(
         modifier = Modifier,
         paddingValues = PaddingValues(),
-        noteList = persistentListOf()
+        noteList = persistentListOf(),
+        onNoteClick = {}
     )
 }
 

@@ -14,7 +14,6 @@ class MainViewModel(
 ) : ViewModel() {
 
     private val _noteList = MutableStateFlow<List<NoteModel>>(emptyList())
-
     val noteList: StateFlow<List<NoteModel>>
         get() = _noteList
             .asStateFlow()

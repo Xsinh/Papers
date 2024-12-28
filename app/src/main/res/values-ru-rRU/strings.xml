@@ -6,4 +6,5 @@
     <string name="label_write_down_a_note">Запишите заметку</string>
     <string name="description_add">Добавить</string>
     <string name="title_write_down">Записать</string>
+    <string name="title_edit">Редактировать</string>
 </resources>
