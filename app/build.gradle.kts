@@ -11,12 +11,12 @@ android {
 
     defaultConfig {
         applicationId = "com.implosion.papers"
-        versionName = "0.1.0"
+        versionName = "0.2.0"
 
         minSdk = 26
 
         targetSdk = 35
-        versionCode = 1
+        versionCode = 2
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -49,6 +49,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -58,10 +61,14 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.collections.immutable)
+
+    implementation(libs.androidx.core.splashscreen)
 
 //    for future
 //    implementation(libs.gson)

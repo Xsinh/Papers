@@ -7,7 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.implosion.papers.presentation.ui.screen.details.edit.NoteDetailsEditScreen
 import com.implosion.papers.presentation.ui.screen.details.read.NoteDetailsReadScreen
 import com.implosion.papers.presentation.ui.screen.details.write.NoteDetailsWriteScreen
-import com.implosion.papers.presentation.ui.screen.main.MainScreen
+import com.implosion.papers.presentation.ui.screen.main.screen.MainScreen
 
 @Composable
 fun AppNavigation() {

@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Papers"
 include(":app")
- 
+include(":core:domain")
+include(":core:data")
+

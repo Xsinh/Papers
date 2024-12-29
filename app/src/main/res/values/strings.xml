@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Papers</string>
     <string name="title_empty_notes">No notes yet</string>
-    <string name="title_loading">Loading...</string>
+    <string name="title_loading">Loading…</string>
     <string name="label_write_down_a_note">Write down a note</string>
     <string name="description_add">Add</string>
     <string name="title_write_down">Write down</string>
     <string name="title_edit">Edit</string>
+    <string name="description_delete">Delete</string>
 </resources>

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.Papers" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Papers.Splash" parent="Theme.SplashScreen">
+        <!-- Устанавливаем фоновое изображение или цвет -->
+        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <!-- Устанавливаем иконку или изображение -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <!-- Устанавливаем продолжительность задержки -->
+        <item name="postSplashScreenTheme">@style/Theme.Papers</item>
+    </style>
 </resources>
