@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -87,9 +89,9 @@ private fun MainNoteItem(
                 }
             }
             .padding(16.dp),
-        horizontalArrangement = Arrangement.Absolute.SpaceBetween
+        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
     ) {
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             if (item.title.isNullOrEmpty()) {
                 Text(
                     text = item.content,
@@ -111,19 +113,24 @@ private fun MainNoteItem(
             }
 
         }
-        Icon(
-            modifier = Modifier
-                .clip(RoundedCornerShape(25))
-                .alpha(0.25f)
-                .clickable {
-                    item.noteId?.let { id ->
-                        onClickListener.onNoteDelete(id)
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.End,
+        ) {
+            Icon(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(25))
+                    .alpha(0.25f)
+                    .clickable {
+                        item.noteId?.let { id ->
+                            onClickListener.onNoteDelete(id)
+                        }
                     }
-                }
-                .padding(8.dp),
-            imageVector = Icons.Filled.Delete,
-            contentDescription = stringResource(R.string.description_delete)
-        )
+                    .padding(8.dp),
+                imageVector = Icons.Filled.Delete,
+                contentDescription = stringResource(R.string.description_delete)
+            )
+        }
     }
 }
 
@@ -189,8 +196,8 @@ private fun MainNoteItemPreview() {
     MainNoteItem(
         item = NoteModel(
             noteId = 0,
-            title = "Title",
-            content = "Content",
+//            title = "Title",
+            content = "Content \n more \n more",
             createdAt = 0L,
             updatedAt = 0L
         ),
