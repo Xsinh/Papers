@@ -90,8 +90,9 @@ private fun MainNoteItem(
             }
             .padding(16.dp),
         horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.weight(1f)) {
+        Column {
             if (item.title.isNullOrEmpty()) {
                 Text(
                     text = item.content,
@@ -197,7 +198,7 @@ private fun MainNoteItemPreview() {
         item = NoteModel(
             noteId = 0,
 //            title = "Title",
-            content = "Content \n more \n more",
+            content = "Content",
             createdAt = 0L,
             updatedAt = 0L
         ),
