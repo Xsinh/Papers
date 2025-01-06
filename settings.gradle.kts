@@ -24,3 +24,6 @@ include(":app")
 include(":core:domain")
 include(":core:data")
 
+include(":feature")
+include(":feature:markdown")
+include(":feature:paint")
