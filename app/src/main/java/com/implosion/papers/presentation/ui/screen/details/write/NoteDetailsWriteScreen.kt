@@ -41,7 +41,6 @@ fun NoteDetailsWriteScreen(modifier: Modifier = Modifier, navController: NavCont
     PapersTheme {
         ModalBottomSheet(
             modifier = Modifier,
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
             sheetState = bottomSheetState,
             content = {
                 NoteDetailCreateComponent(

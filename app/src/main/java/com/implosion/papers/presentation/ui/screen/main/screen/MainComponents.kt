@@ -197,7 +197,7 @@ private fun MainNoteItemPreview() {
     MainNoteItem(
         item = NoteModel(
             noteId = 0,
-//            title = "Title",
+            title = "Title",
             content = "Content",
             createdAt = 0L,
             updatedAt = 0L

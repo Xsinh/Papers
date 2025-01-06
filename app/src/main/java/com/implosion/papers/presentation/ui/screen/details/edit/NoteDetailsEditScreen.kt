@@ -32,7 +32,6 @@ fun NoteDetailsEditScreen(
 
         PapersTheme {
             ModalBottomSheet(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
                 sheetState = bottomSheetState,
                 content = {
                     viewModel.note
