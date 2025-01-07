@@ -2,8 +2,8 @@ package com.implosion.data.repository
 
 import com.implosion.data.database.NotesDatabase
 import com.implosion.domain.model.NoteModel
-import com.implosion.data.database.entity.note.toDTO
-import com.implosion.data.database.entity.note.toDomain
+import com.implosion.data.database.entity.note.mapper.toDTO
+import com.implosion.data.database.entity.note.mapper.toDomain
 import com.implosion.domain.repository.NoteRepository
 
 class NoteRepositoryImpl(

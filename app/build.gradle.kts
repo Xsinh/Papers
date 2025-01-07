@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.implosion.papers"
-        versionName = "0.2.0"
+        versionName = "0.3.0"
 
         minSdk = 26
 
@@ -71,6 +71,8 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
 
     implementation(libs.androidx.core.splashscreen)
+
+    implementation (libs.kotlinx.coroutines.android)
 
 //    for future
 //    implementation(libs.gson)

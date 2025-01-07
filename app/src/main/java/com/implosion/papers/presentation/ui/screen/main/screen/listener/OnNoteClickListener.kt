@@ -1,4 +1,4 @@
-package com.implosion.papers.presentation.ui.screen.main.screen
+package com.implosion.papers.presentation.ui.screen.main.screen.listener
 
 interface OnNoteClickListener {
 

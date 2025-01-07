@@ -17,15 +17,18 @@ import androidx.navigation.NavController
 import com.implosion.papers.R
 import com.implosion.papers.presentation.navigation.NavigationScreen
 import com.implosion.papers.presentation.ui.screen.main.MainViewModel
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
 import com.implosion.papers.presentation.ui.theme.PapersTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = null) {
     val viewModel: MainViewModel = koinViewModel()
-
+    val notes = viewModel.noteList.collectAsState().value
+    
     LaunchedEffect(Unit) {
-        viewModel.loadNotes()
+
     }
 
     PapersTheme {
@@ -44,7 +47,7 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                     .padding(paddingValues)
                     .fillMaxSize(),
                 paddingValues = paddingValues,
-                noteList = viewModel.noteList.collectAsState().value,
+                noteList = notes,
                 onClickListener = object : OnNoteClickListener {
                     override fun onNoteClick(id: Int) {
                         navController?.navigate("${NavigationScreen.DetailsReadNote.route}/${id}")
@@ -54,6 +57,12 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                         viewModel.deleteNote(id)
                     }
                 },
+                onHashTagListener = object : OnHashTagListener {
+
+                    override fun onHashTagWritten(noteId: Int, tagName: String) {
+                        viewModel.setHashTag(noteId = noteId, hashTag = tagName)
+                    }
+                }
             )
         })
     }

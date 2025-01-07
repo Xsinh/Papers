@@ -7,7 +7,7 @@ import org.koin.core.module.dsl.viewModel
 
 val viewModelModule = module {
     viewModel {
-        MainViewModel(noteRepository = get())
+        MainViewModel(noteRepository = get(), hashTagRepository = get())
     }
     viewModel {
         NoteDetailsViewModel(noteRepository = get())

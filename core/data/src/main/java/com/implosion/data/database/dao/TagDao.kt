@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import androidx.room.Update
 import com.implosion.data.database.entity.tag.TagEntity
 
@@ -17,4 +18,7 @@ interface TagDao {
 
     @Delete
     suspend fun delete(tag: TagEntity)
+
+    @Query("SELECT * FROM tag_table WHERE name = :name")
+    suspend fun getTagByName(name: String): TagEntity?
 }

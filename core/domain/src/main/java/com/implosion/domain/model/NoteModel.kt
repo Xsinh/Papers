@@ -6,4 +6,5 @@ data class NoteModel(
     val content: String,
     val createdAt: Long,
     val updatedAt: Long,
+    val hashTagList: List<TagModel> = emptyList<TagModel>()
 )

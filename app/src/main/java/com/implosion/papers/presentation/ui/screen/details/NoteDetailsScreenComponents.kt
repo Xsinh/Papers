@@ -1,12 +1,14 @@
 package com.implosion.papers.presentation.ui.screen.details
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -65,15 +67,20 @@ fun NoteDetailCreateComponent(
                 unfocusedContainerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
+                disabledIndicatorColor = Color.Transparent,
+                focusedTextColor = MaterialTheme.colorScheme.inverseSurface
             )
         )
 
-        Button(
+        val borderWidth = 1.dp
+        val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+        OutlinedButton(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(4.dp),
-            shape = RoundedCornerShape(24),
+
+            shape = RoundedCornerShape(64),
+            border = BorderStroke(borderWidth, borderColor),
             onClick = {
                 onButtonClick.invoke(noteText)
             }) {
@@ -100,11 +107,15 @@ fun NoteDetailReadComponent(
             style = Typography.bodyLarge,
         )
 
-        Button(
+        val borderWidth = 1.dp
+        val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+        OutlinedButton(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(4.dp),
-            shape = RoundedCornerShape(24),
+
+            shape = RoundedCornerShape(64),
+            border = BorderStroke(borderWidth, borderColor),
             onClick = {
                 onButtonClick.invoke()
             }) {
