@@ -56,7 +56,6 @@ import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTa
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
 import com.implosion.papers.presentation.ui.theme.Typography
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlin.String
@@ -79,15 +78,64 @@ fun LazyListContent(
     if (noteList.isEmpty()) {
         EmptyNoteScreen()
     } else {
+        NotesMainScreen(
+            modifier,
+            focusManager,
+            paddingValues,
+            itemsList,
+            onClickListener,
+            onHashTagListener,
+            focusRequester
+        )
+    }
+}
+
+@Composable
+private fun NotesMainScreen(
+    modifier: Modifier,
+    focusManager: FocusManager,
+    paddingValues: PaddingValues,
+    itemsList: List<NoteModel>,
+    onClickListener: OnNoteClickListener,
+    onHashTagListener: OnHashTagListener,
+    focusRequester: FocusRequester
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(4))
+            .clickable {
+                focusManager.clearFocus()
+            },
+        horizontalAlignment = Alignment.End,
+    ) {
+        //Row {
+//        Icon(
+//            modifier = Modifier
+//                .padding(top = 4.dp)
+//                .clip(RoundedCornerShape(25))
+//                .alpha(0.25f)
+//                .clickable {
+//
+//                }
+//                .padding(16.dp),
+//
+//            imageVector = Icons.Filled.Search,
+//            contentDescription = stringResource(R.string.description_search)
+//        )
+        //}
         LazyColumn(
             contentPadding = paddingValues,
-            modifier = modifier
-                .clip(RoundedCornerShape(4))
-                .clickable {
-                    focusManager.clearFocus()
-                },
+//                modifier = modifier
+//                    .clip(RoundedCornerShape(4))
+//                    .clickable {
+//                        focusManager.clearFocus()
+//                    },
         ) {
-            items(items = itemsList, key = { item -> item.noteId ?: 0 }) { item ->
+            items(
+                items = itemsList,
+//                key = { item -> item.noteId ?: 0 }
+            ) { item ->
+
                 MainNoteItem(
                     modifier = Modifier.animateItem(),
                     item = item,
@@ -218,7 +266,7 @@ fun HashtagContainer(
             Row {
 
                 Text(
-                    "#clickForHashTag",
+                    text = stringResource(R.string.description_click_for_hashtag),
                     color = MaterialTheme.colorScheme.inverseSurface
                         .copy(alpha = 0.4f)
                 )
@@ -233,9 +281,11 @@ fun HashtagContainer(
                             color = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier.animateItem()
                         )
-                        Spacer(modifier = Modifier
-                            .padding(horizontal = 2.dp)
-                            .animateItem())
+                        Spacer(
+                            modifier = Modifier
+                                .padding(horizontal = 2.dp)
+                                .animateItem()
+                        )
                     }
                 }
             }
@@ -301,6 +351,48 @@ fun EmptyNoteScreen() {
 
 @Preview
 @Composable
+fun NotesMainScreenPreview() {
+    NotesMainScreen(
+        modifier = Modifier,
+        focusRequester = FocusRequester(),
+        focusManager = LocalFocusManager.current,
+        paddingValues = PaddingValues(2.dp),
+        onClickListener = object : OnNoteClickListener {
+            override fun onNoteClick(id: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onNoteDelete(id: Int) {
+                TODO("Not yet implemented")
+            }
+
+        },
+        onHashTagListener = object : OnHashTagListener {
+            override fun onHashTagWritten(noteId: Int, tagName: String) {
+                TODO("Not yet implemented")
+            }
+
+        },
+        itemsList = listOf(
+            NoteModel(
+                noteId = 0,
+                title = "Title",
+                content = "Content",
+                createdAt = 0L,
+                updatedAt = 0L
+            ), NoteModel(
+                noteId = 0,
+                title = "Title",
+                content = "Content",
+                createdAt = 0L,
+                updatedAt = 0L
+            )
+        ),
+    )
+}
+
+@Preview
+@Composable
 private fun MainNoteItemPreview() {
     MainNoteItem(
         item = NoteModel(
@@ -335,7 +427,7 @@ private fun LazyListContentPreview() {
     LazyListContent(
         modifier = Modifier,
         paddingValues = PaddingValues(),
-        noteList = persistentListOf(),
+        noteList = emptyList(),
         onClickListener = object : OnNoteClickListener {
             override fun onNoteClick(id: Int) {
                 TODO("Not yet implemented")

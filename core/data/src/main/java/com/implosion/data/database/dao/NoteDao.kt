@@ -30,4 +30,7 @@ interface NoteDao {
 
     @Query("SELECT * FROM notes_table")
     suspend fun getAllNotes(): List<NoteEntity>
+
+    @Query("SELECT * FROM notes_table WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%'")
+    suspend fun searchNotesByText(query: String): List<NoteEntity>
 }

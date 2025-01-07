@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.implosion.domain.model.NoteModel
 import com.implosion.domain.repository.HashTagRepository
 import com.implosion.domain.repository.NoteRepository
+import com.implosion.domain.repository.SearchRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlin.properties.Delegates
 class MainViewModel(
     private val noteRepository: NoteRepository,
     private val hashTagRepository: HashTagRepository,
+    private val searchRepository: SearchRepository,
 ) : ViewModel() {
 
     private val _noteList =
@@ -51,6 +53,22 @@ class MainViewModel(
         }
     }
 
+    fun searchNotes(query: String) {
+        viewModelScope.launch {
+            val results =
+                searchRepository.search(query)
+
+            val updatedNotes = results.map { note ->
+                async {
+                    val tags = hashTagRepository.getAllTagsFromNote(note.noteId)
+                    note.copy(hashTagList = tags)
+                }
+            }.awaitAll()
+
+            _noteList.emit(updatedNotes)
+        }
+    }
+
     fun deleteNote(noteId: Int) {
         viewModelScope.launch {
             noteRepository.deleteNoteById(noteId)
@@ -59,6 +77,6 @@ class MainViewModel(
     }
 
     private suspend fun refreshNotes() {
-         notesCache = noteRepository.getAllNotes() // это приведет к обновлению _noteList
+        notesCache = noteRepository.getAllNotes()
     }
 }

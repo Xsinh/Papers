@@ -8,4 +8,7 @@
     <string name="title_write_down">Записать</string>
     <string name="title_edit">Редактировать</string>
     <string name="description_delete">Удалить</string>
+    <string name="title_paint">Paint Note</string>
+    <string name="description_click_for_hashtag">#жмиДляХэштэга</string>
+    <string name="description_search">Поиск</string>
 </resources>
