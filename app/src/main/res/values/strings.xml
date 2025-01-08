@@ -10,4 +10,5 @@
     <string name="title_paint">Paint Note</string>
     <string name="description_click_for_hashtag">#clickForHashTag</string>
     <string name="description_search">Search</string>
+    <string name="description_clear">clear</string>
 </resources>

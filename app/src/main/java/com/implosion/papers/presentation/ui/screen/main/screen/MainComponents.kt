@@ -103,37 +103,15 @@ private fun NotesMainScreen(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(4))
-            .clickable {
-                focusManager.clearFocus()
-            },
+        ,
         horizontalAlignment = Alignment.End,
     ) {
-        //Row {
-//        Icon(
-//            modifier = Modifier
-//                .padding(top = 4.dp)
-//                .clip(RoundedCornerShape(25))
-//                .alpha(0.25f)
-//                .clickable {
-//
-//                }
-//                .padding(16.dp),
-//
-//            imageVector = Icons.Filled.Search,
-//            contentDescription = stringResource(R.string.description_search)
-//        )
-        //}
         LazyColumn(
             contentPadding = paddingValues,
-//                modifier = modifier
-//                    .clip(RoundedCornerShape(4))
-//                    .clickable {
-//                        focusManager.clearFocus()
-//                    },
         ) {
             items(
                 items = itemsList,
-//                key = { item -> item.noteId ?: 0 }
+                key = { item -> item.noteId ?: 0 }
             ) { item ->
 
                 MainNoteItem(
