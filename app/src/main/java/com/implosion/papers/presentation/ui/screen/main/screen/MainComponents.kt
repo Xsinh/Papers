@@ -102,8 +102,7 @@ private fun NotesMainScreen(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(4))
-        ,
+            .clip(RoundedCornerShape(4)),
         horizontalAlignment = Alignment.End,
     ) {
         LazyColumn(
@@ -166,7 +165,9 @@ private fun MainNoteItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier.padding(start = 16.dp)
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .weight(1f)
             ) {
                 if (item.title.isNullOrEmpty()) {
                     Text(
