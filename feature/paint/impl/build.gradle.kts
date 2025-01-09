@@ -1,17 +1,17 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.implosion.data"
-    compileSdk = 35
+    namespace = "com.implosion.feature.paint.impl"
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -33,11 +33,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
 
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.core.ktx)
+    implementation(project(":feature:paint:api"))
+    implementation(project(":feature:paint"))
 
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
