@@ -26,6 +26,3 @@ include(":core:data")
 
 include(":feature")
 include(":feature:markdown")
-
-//include(":feature:paint")
-//include(":feature:paint:api")

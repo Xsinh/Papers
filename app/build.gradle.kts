@@ -46,14 +46,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    //dynamicFeatures += setOf(":feature:paint")
 }
 
 dependencies {
     implementation(project(":core:data"))
-    implementation(project(":core:domain"))
-
-//    implementation(project(":feature:paint:api"))
+    api(project(":core:domain"))
 
     implementation(libs.androidx.core.ktx)
     api (libs.core)
@@ -70,6 +67,7 @@ dependencies {
 
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+    implementation (libs.koin.core)
 
     implementation(libs.androidx.navigation.compose)
 
