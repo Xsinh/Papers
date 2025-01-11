@@ -9,7 +9,7 @@
     <string name="title_edit">Редактировать</string>
     <string name="description_delete">Удалить</string>
     <string name="title_paint">Paint Note</string>
-    <string name="description_click_for_hashtag">#жмиДляХэштэга</string>
+    <string name="description_click_for_hashtag">#введиХэштэг</string>
     <string name="description_search">Поиск</string>
     <string name="description_clear">Очистить</string>
 </resources>

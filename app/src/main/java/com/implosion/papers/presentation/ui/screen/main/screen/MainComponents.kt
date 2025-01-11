@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -245,6 +246,7 @@ fun HashtagContainer(
             Row {
 
                 Text(
+                    modifier = Modifier.padding(top = 4.dp),
                     text = stringResource(R.string.description_click_for_hashtag),
                     color = MaterialTheme.colorScheme.inverseSurface
                         .copy(alpha = 0.4f)
@@ -255,16 +257,7 @@ fun HashtagContainer(
                 LazyRow {
                     items(items = hashTagList, key = { item -> item.tagId }) { chipText ->
 
-                        Text(
-                            text = chipText.name,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            modifier = Modifier.animateItem()
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .padding(horizontal = 2.dp)
-                                .animateItem()
-                        )
+                        HashTagItem(chipText)
                     }
                 }
             }
@@ -294,6 +287,21 @@ fun HashtagContainer(
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
         ),
+    )
+}
+
+@Composable
+private fun LazyItemScope.HashTagItem(chipText: TagModel) {
+    Text(
+        text = chipText.name,
+        color = MaterialTheme.colorScheme.tertiary,
+        modifier = Modifier
+            .animateItem()
+            .clip(RoundedCornerShape(25))
+            .clickable {
+
+            }
+            .padding(4.dp)
     )
 }
 
@@ -351,6 +359,10 @@ fun NotesMainScreenPreview() {
                 TODO("Not yet implemented")
             }
 
+            override fun onHashtagClick(tagId: Int) {
+                TODO("Not yet implemented")
+            }
+
         },
         itemsList = listOf(
             NoteModel(
@@ -395,6 +407,10 @@ private fun MainNoteItemPreview() {
             override fun onHashTagWritten(noteId: Int, tagName: String) {
                 TODO("Not yet implemented")
             }
+
+            override fun onHashtagClick(tagId: Int) {
+                TODO("Not yet implemented")
+            }
         },
         focusRequester = FocusRequester(),
     )
@@ -419,6 +435,10 @@ private fun LazyListContentPreview() {
         onHashTagListener = object : OnHashTagListener {
 
             override fun onHashTagWritten(noteId: Int, tagName: String) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onHashtagClick(tagId: Int) {
                 TODO("Not yet implemented")
             }
         },

@@ -1,5 +1,7 @@
 package com.implosion.papers.presentation.ui.screen.main.screen
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -52,6 +54,10 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
     var searchQuery by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
+    BackHandler {
+        (navController?.context as? Activity)?.finish()
+    }
+
     PapersTheme {
         Scaffold(floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -96,6 +102,10 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
 
                         override fun onHashTagWritten(noteId: Int, tagName: String) {
                             viewModel.setHashTag(noteId = noteId, hashTag = tagName)
+                        }
+
+                        override fun onHashtagClick(tagId: Int) {
+                            TODO("Not yet implemented")
                         }
                     })
             }
