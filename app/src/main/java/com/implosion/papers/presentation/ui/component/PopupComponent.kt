@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -83,7 +84,7 @@ fun HashtagPopupComponent(
                             .width(IntrinsicSize.Min)
                             .clip(RoundedCornerShape(26))
                             .alpha(0.9f)
-                            .background(Color.White),
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)),
                         verticalArrangement = Arrangement.Bottom,
                     ) {
 
