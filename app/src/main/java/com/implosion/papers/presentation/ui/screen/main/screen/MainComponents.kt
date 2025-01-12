@@ -79,7 +79,9 @@ fun LazyListContent(
 
     onClickListener: OnNoteClickListener,
     onHashTagListener: OnHashTagListener,
-    onPopupShow: (Boolean) -> Unit
+
+    onPopupShow: (Boolean) -> Unit,
+    onHashTagMenuListener: OnHashTagMenuListener
 ) {
     val itemsList = noteList
     val focusManager = LocalFocusManager.current
@@ -89,14 +91,15 @@ fun LazyListContent(
         EmptyNoteScreen()
     } else {
         NotesMainScreen(
-            modifier,
-            focusManager,
-            paddingValues,
-            itemsList,
-            onClickListener,
-            onHashTagListener,
-            focusRequester,
-            onPopupShow
+            modifier = modifier,
+            focusManager = focusManager,
+            paddingValues = paddingValues,
+            itemsList = itemsList,
+            onClickListener = onClickListener,
+            onHashTagListener = onHashTagListener,
+            focusRequester = focusRequester,
+            onPopupShow = onPopupShow,
+            onHashTagMenuListener = onHashTagMenuListener
         )
     }
 }
@@ -110,7 +113,9 @@ private fun NotesMainScreen(
     onClickListener: OnNoteClickListener,
     onHashTagListener: OnHashTagListener,
     focusRequester: FocusRequester,
-    onPopupShow: (Boolean) -> Unit
+
+    onPopupShow: (Boolean) -> Unit,
+    onHashTagMenuListener: OnHashTagMenuListener
 ) {
     Column(
         modifier = modifier
@@ -132,7 +137,8 @@ private fun NotesMainScreen(
                     onHashTagListener = onHashTagListener,
                     focusRequester = focusRequester,
                     focusManager = focusManager,
-                    onPopupShow = onPopupShow
+                    onPopupShow = onPopupShow,
+                    onHashTagMenuListener = onHashTagMenuListener
                 )
             }
         }
@@ -151,7 +157,8 @@ private fun MainNoteItem(
     focusManager: FocusManager = LocalFocusManager.current,
 
     modifier: Modifier = Modifier,
-    onPopupShow: (Boolean) -> Unit
+    onPopupShow: (Boolean) -> Unit,
+    onHashTagMenuListener: OnHashTagMenuListener
 ) {
     val borderWidth = 1.dp
     val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
@@ -234,8 +241,10 @@ private fun MainNoteItem(
                     focusManager = focusManager,
                     onHashTagListener = onHashTagListener,
                     noteId = id,
+                    item = item,
                     hashTagList = item.hashTagList.toImmutableList(),
-                    onPopupShow = onPopupShow
+                    onPopupShow = onPopupShow,
+                    onHashTagMenuListener = onHashTagMenuListener
                 )
             }
     }
@@ -243,13 +252,16 @@ private fun MainNoteItem(
 
 @Composable
 fun HashtagContainer(
+    item: NoteModel,
     focusRequester: FocusRequester,
     focusManager: FocusManager,
     noteId: Int,
 
     onHashTagListener: OnHashTagListener,
     hashTagList: ImmutableList<TagModel>,
+
     onPopupShow: (Boolean) -> Unit,
+    onHashTagMenuListener: OnHashTagMenuListener
 ) {
     var hashTagText by remember { mutableStateOf("") }
 
@@ -272,7 +284,12 @@ fun HashtagContainer(
                 LazyRow {
                     items(items = hashTagList, key = { item -> item.tagId }) { chipText ->
 
-                        HashTagItem(chipText = chipText, onPopupShow = onPopupShow)
+                        HashTagItem(
+                            item = item,
+                            tagModel = chipText,
+                            onPopupShow = onPopupShow,
+                            onHashTagMenuListener = onHashTagMenuListener
+                        )
                     }
                 }
             }
@@ -306,39 +323,47 @@ fun HashtagContainer(
 }
 
 @Composable
-private fun LazyItemScope.HashTagItem(chipText: TagModel, onPopupShow: (Boolean) -> Unit) {
+private fun LazyItemScope.HashTagItem(
+    item: NoteModel,
+    tagModel: TagModel,
+    onPopupShow: (Boolean) -> Unit,
+    onHashTagMenuListener: OnHashTagMenuListener
+) {
     var showMenu by remember { mutableStateOf(false) }
 
-    val infiniteTransition = rememberInfiniteTransition(label = "infiniteTransition")
-    val pulseSizeAnimation by infiniteTransition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ), label = "pulseSizeAnimation"
-    )
+    val pulseSizeAnimation = getPulseAnimation(showMenu)
+    LaunchedEffect(showMenu) {
+        onPopupShow(showMenu)
+    }
 
     HashtagPopupComponent(
+        noteId = item.noteId ?: 0,
+        tagModel = tagModel,
         showMenu = showMenu,
         onHashTagMenuListener = object : OnHashTagMenuListener {
 
-            override fun findNote(id: Int) {
-                TODO("Not yet implemented")
+            override fun findNote(tagModel: TagModel) {
+                onHashTagMenuListener.findNote(tagModel)
+                showMenu = false
+                onPopupShow(false)
             }
 
-            override fun deleteHashTag(id: Int) {
-                TODO("Not yet implemented")
+            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
+                onHashTagMenuListener.deleteHashTag(hashTagId = hashTagId, noteId = noteId)
+                onHashTagMenuListener.dismissMenu()
+                showMenu = false
+                onPopupShow(false)
             }
 
             override fun dismissMenu() {
+                onHashTagMenuListener.dismissMenu()
                 showMenu = false
+                onPopupShow(false)
             }
         },
-        onPopupShow = onPopupShow
     )
     Text(
-        text = chipText.name,
+        text = tagModel.name,
         color = MaterialTheme.colorScheme.tertiary.copy(
             alpha = if (showMenu) pulseSizeAnimation else 1f
         ),
@@ -351,6 +376,25 @@ private fun LazyItemScope.HashTagItem(chipText: TagModel, onPopupShow: (Boolean)
             .padding(4.dp)
     )
 }
+
+@Composable
+private fun getPulseAnimation(enabled: Boolean): Float {
+    return if (enabled) {
+        val infiniteTransition = rememberInfiniteTransition(label = "infiniteTransition")
+        val pulseSizeAnimation by infiniteTransition.animateFloat(
+            initialValue = 0.2f,
+            targetValue = 2f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 900, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ), label = "pulseSizeAnimation"
+        )
+        pulseSizeAnimation
+    } else {
+        1f
+    }
+}
+
 
 @Composable
 fun EmptyNoteScreen() {
@@ -408,7 +452,6 @@ fun NotesMainScreenPreview() {
             override fun onHashtagClick(tagId: Int) {
                 TODO("Not yet implemented")
             }
-
         },
         itemsList = listOf(
             NoteModel(
@@ -425,7 +468,21 @@ fun NotesMainScreenPreview() {
                 updatedAt = 0L
             )
         ),
-        onPopupShow = {}
+        onPopupShow = {},
+        onHashTagMenuListener = object : OnHashTagMenuListener {
+
+            override fun findNote(tagModel: TagModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun dismissMenu() {
+                TODO("Not yet implemented")
+            }
+        }
     )
 }
 
@@ -462,6 +519,20 @@ private fun MainNoteItemPreview() {
         focusRequester = FocusRequester(),
         onPopupShow = {
 
+        },
+        onHashTagMenuListener = object : OnHashTagMenuListener {
+
+            override fun findNote(tagModel: TagModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun dismissMenu() {
+                TODO("Not yet implemented")
+            }
         }
     )
 }
@@ -492,7 +563,20 @@ private fun LazyListContentPreview() {
                 TODO("Not yet implemented")
             }
         },
-        onPopupShow = {}
+        onPopupShow = {},
+        onHashTagMenuListener = object : OnHashTagMenuListener {
+            override fun findNote(tagModel: TagModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun dismissMenu() {
+                TODO("Not yet implemented")
+            }
+        }
     )
 }
 

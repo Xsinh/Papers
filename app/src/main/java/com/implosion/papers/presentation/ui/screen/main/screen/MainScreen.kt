@@ -42,10 +42,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
 import com.implosion.papers.presentation.navigation.NavigationScreen
 import com.implosion.papers.presentation.ui.screen.main.MainViewModel
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
 import com.implosion.papers.presentation.ui.theme.PapersTheme
 import org.koin.androidx.compose.koinViewModel
@@ -117,11 +119,26 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                         }
 
                         override fun onHashtagClick(tagId: Int) {
-                            TODO("Not yet implemented")
+
                         }
                     },
                     onPopupShow = { isShow ->
                         showBackground = isShow
+                    },
+                    onHashTagMenuListener = object : OnHashTagMenuListener {
+
+                        override fun findNote(tagModel: TagModel) {
+                            searchQuery = tagModel.name
+                            viewModel.searchNotes(tagModel.name)
+                        }
+
+                        override fun deleteHashTag(hashTagId: Int, noteId: Int) {
+                            viewModel.deleteHashTag(hashTagId, noteId)
+                        }
+
+                        override fun dismissMenu() {
+
+                        }
                     }
                 )
             }

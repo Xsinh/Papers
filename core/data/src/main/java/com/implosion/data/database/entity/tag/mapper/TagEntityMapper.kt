@@ -17,3 +17,10 @@ fun TagEntity.toDomain(): TagModel {
         name = updatedName
     )
 }
+
+fun TagModel.toDTO(): TagEntity {
+    return TagEntity(
+        id = this.tagId,
+        name = this.name,
+    )
+}

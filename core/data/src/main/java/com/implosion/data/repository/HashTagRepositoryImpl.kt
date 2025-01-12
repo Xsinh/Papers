@@ -12,7 +12,6 @@ class HashTagRepositoryImpl(
 ) : HashTagRepository {
 
     override suspend fun addTagToNote(noteId: Int, tagName: String) {
-
         val existingTag = getTagByName(tagName)
         val tagId = existingTag?.id ?: createNewTag(tagName).toInt()
 
@@ -29,6 +28,15 @@ class HashTagRepositoryImpl(
         } else {
             emptyList()
         }
+    }
+
+    override suspend fun deleteHashTag(hashTagId: Int, noteId: Int) {
+        database.noteTagCrossRefDao().delete(
+            NoteTagCrossRef(
+                noteId = noteId,
+                tagId = hashTagId
+            )
+        )
     }
 
     private suspend fun getTagByName(tagName: String): TagEntity? {

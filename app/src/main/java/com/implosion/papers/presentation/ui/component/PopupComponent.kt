@@ -31,13 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.theme.PurpleGrey40
@@ -47,13 +47,12 @@ import com.implosion.papers.presentation.ui.theme.Typography
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun HashtagPopupComponent(
+    noteId: Int,
+    tagModel: TagModel,
     showMenu: Boolean, // Состояние отображения/скрытия Popup
     onHashTagMenuListener: OnHashTagMenuListener,
-    onPopupShow: (Boolean) -> Unit
 ) {
     var menuOffset by remember { mutableStateOf(Offset.Zero) } // Для произвольной позиции
-
-    onPopupShow(showMenu)
 
     if (showMenu) { // Проверяем, нужно ли отображать Popup
         Box(
@@ -88,59 +87,15 @@ fun HashtagPopupComponent(
                         verticalArrangement = Arrangement.Bottom,
                     ) {
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {}
-                                .padding(bottom = 4.dp, start = 8.dp, end = 18.dp, top = 8.dp),
-                            verticalAlignment = Alignment.Bottom // Это определяет, что всё содержимое скроется к нижней границе строки
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(25)),
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = stringResource(R.string.description_delete),
-                                tint = PurpleGrey40
-                            )
-
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 8.dp),
-                                text = stringResource(R.string.description_find),
-                                style = Typography.bodyLarge,
-                                color = PurpleGrey40,
-                            )
-                        }
+                        FindItem(onHashTagMenuListener, tagModel)
 
                         Spacer(Modifier.padding(vertical = 2.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-
-                                }
-                                .padding(bottom = 10.dp, start = 8.dp, end = 18.dp),
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(25))
-                                    .alpha(0.5f),
-                                imageVector = Icons.Filled.Delete,
-                                contentDescription = stringResource(R.string.description_delete),
-                                tint = Red80
-                            )
-
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 8.dp)
-                                    .alpha(0.8f),
-                                text = stringResource(R.string.description_delete),
-                                style = Typography.bodyLarge,
-                                color = Red80,
-                            )
-                        }
+                        DeleteItem(
+                            onHashTagMenuListener = onHashTagMenuListener,
+                            hashTagId = tagModel.tagId,
+                            noteId = noteId
+                        )
                     }
                 }
             }
@@ -149,17 +104,86 @@ fun HashtagPopupComponent(
 }
 
 @Composable
+private fun FindItem(
+    onHashTagMenuListener: OnHashTagMenuListener,
+    tagModel: TagModel
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onHashTagMenuListener.findNote(tagModel)
+            }
+            .padding(bottom = 4.dp, start = 8.dp, end = 18.dp, top = 8.dp),
+        verticalAlignment = Alignment.Bottom // Это определяет, что всё содержимое скроется к нижней границе строки
+    ) {
+        Icon(
+            modifier = Modifier
+                .clip(RoundedCornerShape(25)),
+            imageVector = Icons.Filled.Search,
+            contentDescription = stringResource(R.string.description_find),
+            tint = PurpleGrey40
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(start = 8.dp),
+            text = stringResource(R.string.description_find),
+            style = Typography.bodyLarge,
+            color = PurpleGrey40,
+        )
+    }
+}
+
+@Composable
+private fun DeleteItem(
+    onHashTagMenuListener: OnHashTagMenuListener,
+    hashTagId: Int,
+    noteId: Int
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onHashTagMenuListener.deleteHashTag(hashTagId, noteId)
+            }
+            .padding(bottom = 10.dp, start = 8.dp, end = 18.dp),
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Icon(
+            modifier = Modifier
+                .clip(RoundedCornerShape(25))
+                .alpha(0.5f),
+            imageVector = Icons.Filled.Delete,
+            contentDescription = stringResource(R.string.description_delete),
+            tint = Red80
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .alpha(0.8f),
+            text = stringResource(R.string.description_delete),
+            style = Typography.bodyLarge,
+            color = Red80,
+        )
+    }
+}
+
+@Composable
 @Preview
 private fun HashtagPopupComponentPreview() {
     HashtagPopupComponent(
+        noteId = 0,
+        tagModel = TagModel(0, ""),
         showMenu = true,
         onHashTagMenuListener = object : OnHashTagMenuListener {
 
-            override fun findNote(id: Int) {
+            override fun findNote(tagModel: TagModel) {
                 TODO("Not yet implemented")
             }
 
-            override fun deleteHashTag(id: Int) {
+            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
                 TODO("Not yet implemented")
             }
 
@@ -167,8 +191,5 @@ private fun HashtagPopupComponentPreview() {
                 TODO("Not yet implemented")
             }
         },
-        onPopupShow = {
-
-        }
     )
 }

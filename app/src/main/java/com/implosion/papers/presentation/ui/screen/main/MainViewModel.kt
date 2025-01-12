@@ -29,6 +29,13 @@ class MainViewModel(
         }
     }
 
+    fun deleteHashTag(hashTagId: Int, noteId: Int) {
+        viewModelScope.launch {
+            noteInteractor.deleteHashTag(hashTagId, noteId)
+            refreshNotes()
+        }
+    }
+
     fun searchNotes(query: String) {
         viewModelScope.launch {
             val results = noteInteractor.searchNotes(query)

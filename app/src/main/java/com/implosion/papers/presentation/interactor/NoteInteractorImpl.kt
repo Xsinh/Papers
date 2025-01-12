@@ -23,6 +23,10 @@ class NoteInteractorImpl(
         hashTagRepository.addTagToNote(noteId, tagName)
     }
 
+    override suspend fun deleteHashTag(hashTagId: Int, noteId: Int) {
+        hashTagRepository.deleteHashTag(hashTagId = hashTagId, noteId = noteId)
+    }
+
     override suspend fun searchNotes(query: String): List<NoteModel> {
         val notes = searchRepository.search(query)
         return notes.map { note ->
