@@ -82,7 +82,6 @@ fun HashtagPopupComponent(
                         modifier = Modifier
                             .width(IntrinsicSize.Min)
                             .clip(RoundedCornerShape(26))
-                            //.alpha(0.9f)
                             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.94f)),
                         verticalArrangement = Arrangement.Bottom,
                     ) {
