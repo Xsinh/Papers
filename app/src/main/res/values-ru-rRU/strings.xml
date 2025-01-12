@@ -11,5 +11,6 @@
     <string name="title_paint">Paint Note</string>
     <string name="description_click_for_hashtag">#введиХэштэг</string>
     <string name="description_search">Поиск</string>
+    <string name="description_find">Найти</string>
     <string name="description_clear">Очистить</string>
 </resources>

@@ -1,5 +1,11 @@
 package com.implosion.papers.presentation.ui.screen.main.screen
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
@@ -53,7 +59,9 @@ import androidx.compose.ui.unit.dp
 import com.implosion.domain.model.NoteModel
 import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
+import com.implosion.papers.presentation.ui.component.HashtagPopupComponent
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
 import com.implosion.papers.presentation.ui.theme.Typography
 import kotlinx.collections.immutable.ImmutableList
@@ -71,6 +79,7 @@ fun LazyListContent(
 
     onClickListener: OnNoteClickListener,
     onHashTagListener: OnHashTagListener,
+    onPopupShow: (Boolean) -> Unit
 ) {
     val itemsList = noteList
     val focusManager = LocalFocusManager.current
@@ -86,7 +95,8 @@ fun LazyListContent(
             itemsList,
             onClickListener,
             onHashTagListener,
-            focusRequester
+            focusRequester,
+            onPopupShow
         )
     }
 }
@@ -99,7 +109,8 @@ private fun NotesMainScreen(
     itemsList: List<NoteModel>,
     onClickListener: OnNoteClickListener,
     onHashTagListener: OnHashTagListener,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    onPopupShow: (Boolean) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -121,6 +132,7 @@ private fun NotesMainScreen(
                     onHashTagListener = onHashTagListener,
                     focusRequester = focusRequester,
                     focusManager = focusManager,
+                    onPopupShow = onPopupShow
                 )
             }
         }
@@ -139,6 +151,7 @@ private fun MainNoteItem(
     focusManager: FocusManager = LocalFocusManager.current,
 
     modifier: Modifier = Modifier,
+    onPopupShow: (Boolean) -> Unit
 ) {
     val borderWidth = 1.dp
     val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
@@ -222,6 +235,7 @@ private fun MainNoteItem(
                     onHashTagListener = onHashTagListener,
                     noteId = id,
                     hashTagList = item.hashTagList.toImmutableList(),
+                    onPopupShow = onPopupShow
                 )
             }
     }
@@ -234,7 +248,8 @@ fun HashtagContainer(
     noteId: Int,
 
     onHashTagListener: OnHashTagListener,
-    hashTagList: ImmutableList<TagModel>
+    hashTagList: ImmutableList<TagModel>,
+    onPopupShow: (Boolean) -> Unit,
 ) {
     var hashTagText by remember { mutableStateOf("") }
 
@@ -257,7 +272,7 @@ fun HashtagContainer(
                 LazyRow {
                     items(items = hashTagList, key = { item -> item.tagId }) { chipText ->
 
-                        HashTagItem(chipText)
+                        HashTagItem(chipText = chipText, onPopupShow = onPopupShow)
                     }
                 }
             }
@@ -291,20 +306,51 @@ fun HashtagContainer(
 }
 
 @Composable
-private fun LazyItemScope.HashTagItem(chipText: TagModel) {
+private fun LazyItemScope.HashTagItem(chipText: TagModel, onPopupShow: (Boolean) -> Unit) {
+    var showMenu by remember { mutableStateOf(false) }
+
+    val infiniteTransition = rememberInfiniteTransition(label = "infiniteTransition")
+    val pulseSizeAnimation by infiniteTransition.animateFloat(
+        initialValue = 0.2f,
+        targetValue = 2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = "pulseSizeAnimation"
+    )
+
+    HashtagPopupComponent(
+        showMenu = showMenu,
+        onHashTagMenuListener = object : OnHashTagMenuListener {
+
+            override fun findNote(id: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun deleteHashTag(id: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun dismissMenu() {
+                showMenu = false
+            }
+        },
+        onPopupShow = onPopupShow
+    )
     Text(
         text = chipText.name,
-        color = MaterialTheme.colorScheme.tertiary,
+        color = MaterialTheme.colorScheme.tertiary.copy(
+            alpha = if (showMenu) pulseSizeAnimation else 1f
+        ),
         modifier = Modifier
             .animateItem()
             .clip(RoundedCornerShape(25))
             .clickable {
-
+                showMenu = true
             }
             .padding(4.dp)
     )
 }
-
 
 @Composable
 fun EmptyNoteScreen() {
@@ -379,6 +425,7 @@ fun NotesMainScreenPreview() {
                 updatedAt = 0L
             )
         ),
+        onPopupShow = {}
     )
 }
 
@@ -413,6 +460,9 @@ private fun MainNoteItemPreview() {
             }
         },
         focusRequester = FocusRequester(),
+        onPopupShow = {
+
+        }
     )
 }
 
@@ -442,6 +492,7 @@ private fun LazyListContentPreview() {
                 TODO("Not yet implemented")
             }
         },
+        onPopupShow = {}
     )
 }
 

@@ -2,7 +2,10 @@ package com.implosion.papers.presentation.ui.screen.main.screen
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,6 +28,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,6 +62,10 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
         (navController?.context as? Activity)?.finish()
     }
 
+    var showBackground by remember { mutableStateOf(false) }
+
+    val animatedValue = rememberBackgroundAnimation(showBackground)
+
     PapersTheme {
         Scaffold(floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -71,6 +79,9 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
         }, content = { paddingValues ->
             Column(
                 modifier = modifier
+                    .background(
+                        MaterialTheme.colorScheme.inverseSurface.copy(alpha = animatedValue)
+                    )
                     .clickable {
                         focusManager.clearFocus()
                     }
@@ -85,8 +96,9 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                     search = searchQuery,
                     focusManager = focusManager
                 )
-                LazyListContent(modifier = modifier
-                    .fillMaxSize(),
+                LazyListContent(
+                    modifier = modifier
+                        .fillMaxSize(),
                     paddingValues = paddingValues,
                     noteList = notes,
                     onClickListener = object : OnNoteClickListener {
@@ -107,7 +119,11 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                         override fun onHashtagClick(tagId: Int) {
                             TODO("Not yet implemented")
                         }
-                    })
+                    },
+                    onPopupShow = { isShow ->
+                        showBackground = isShow
+                    }
+                )
             }
         })
     }
@@ -174,6 +190,18 @@ fun CustomSearchView(
             }
         )
     }
+}
+
+@Composable
+private fun rememberBackgroundAnimation(showBackground: Boolean): Float {
+    var targetValue by remember { mutableFloatStateOf(0f) }
+    val animatedValue by animateFloatAsState(
+        targetValue = targetValue,
+        animationSpec = tween(durationMillis = 300),
+        label = "animated_background"
+    )
+    targetValue = if (showBackground) 0.26f else 0f
+    return animatedValue
 }
 
 @Preview

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.3"
+agp = "8.8.0"
 converterGson = "2.9.0"
 core = "1.10.3"
 coreSplashscreen = "1.0.1"
