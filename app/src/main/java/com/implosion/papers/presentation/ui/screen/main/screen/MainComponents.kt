@@ -177,7 +177,7 @@ private fun MainNoteItem(
                     onClickListener.onNoteClick(id)
                 }
             }
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            .padding(start = 4.dp, end = 4.dp, top = 12.dp),
     ) {
         Row(
             modifier = Modifier
@@ -279,7 +279,7 @@ fun HashtagContainer(
                         .copy(alpha = 0.4f)
                 )
 
-                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                Spacer(modifier = Modifier.padding(horizontal = 2.dp))
 
                 LazyRow {
                     items(items = hashTagList, key = { item -> item.tagId }) { chipText ->

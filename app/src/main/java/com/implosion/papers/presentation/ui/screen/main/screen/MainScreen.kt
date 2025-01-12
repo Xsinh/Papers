@@ -1,6 +1,9 @@
 package com.implosion.papers.presentation.ui.screen.main.screen
 
 import android.app.Activity
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -204,9 +207,34 @@ fun CustomSearchView(
                         contentDescription = stringResource(R.string.description_clear)
                     )
                 }
-            }
+            },
         )
     }
+}
+
+//На потом
+@Composable
+fun highlightHashtags(search: String): SpannableString {
+    val regex = "#\\w+".toRegex() // Ищет слова, начинающиеся с #
+    val spannable = SpannableString(search)
+
+    // Находим все хэштеги и закрашиваем их
+    regex.findAll(search).forEach { matchResult ->
+        val start = matchResult.range.first
+        val end =
+            matchResult.range.last + 1 // Конец диапазона (+1, так как range является полуоткрытым)
+
+        // Применяем красный цвет
+        spannable.setSpan(
+            ForegroundColorSpan(MaterialTheme.colorScheme.tertiary.value.toInt()), // Красный цвет
+            start,
+            end,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+    }
+
+    // Устанавливаем текст с выделением в TextView
+    return spannable
 }
 
 @Composable

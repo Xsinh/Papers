@@ -8,7 +8,7 @@
     <string name="title_edit">Edit</string>
     <string name="description_delete">Delete</string>
     <string name="title_paint">Paint Note</string>
-    <string name="description_click_for_hashtag">#enterHashTag</string>
+    <string name="description_click_for_hashtag">#pressIt</string>
     <string name="description_search">Search</string>
     <string name="description_find">Find</string>
     <string name="description_clear">clear</string>
