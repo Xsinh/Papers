@@ -1,8 +1,11 @@
 package com.implosion.papers.presentation.ui.screen.main.screen
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -19,6 +22,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -37,6 +41,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,11 +50,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -59,7 +66,9 @@ import androidx.compose.ui.unit.dp
 import com.implosion.domain.model.NoteModel
 import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
+import com.implosion.papers.presentation.ui.component.AlertDialog
 import com.implosion.papers.presentation.ui.component.HashtagPopupComponent
+import com.implosion.papers.presentation.ui.component.AnimationText
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
@@ -122,11 +131,15 @@ private fun NotesMainScreen(
             .clip(RoundedCornerShape(4)),
         horizontalAlignment = Alignment.End,
     ) {
+        var isShake = shakeNotes()
+
         LazyColumn(
+            modifier = Modifier,
             contentPadding = paddingValues,
+            //reverseLayout = isShake
         ) {
             items(
-                items = itemsList,
+                items = if (isShake) itemsList.reversed() else itemsList,
                 key = { item -> item.noteId ?: 0 }
             ) { item ->
 
@@ -143,6 +156,59 @@ private fun NotesMainScreen(
             }
         }
     }
+}
+
+
+@Composable
+fun shakeNotes(): Boolean {
+    var turn by remember { mutableStateOf(false) }
+
+    val sortText =
+        if (turn) stringResource(R.string.title_new) else stringResource(R.string.title_old)
+
+    var oldSortText by remember { mutableStateOf(sortText) }
+
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (turn) 90f else 270f, // Угол поворота в зависимости от состояния
+        animationSpec = tween(
+            durationMillis = 500,
+            easing = FastOutSlowInEasing
+        ) // Настройка анимации
+    )
+
+    SideEffect {
+        oldSortText = sortText
+    }
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(35))
+            .clickable {
+                turn = !turn
+            }
+            .padding(4.dp),
+        verticalAlignment = Alignment.Bottom
+    ) {
+        AnimationText(sortText, oldSortText)
+
+        Icon(
+            modifier = Modifier
+                .alpha(0.9f)
+                .size(16.dp)
+                .rotate(rotationAngle)
+                .animateContentSize(),
+            painter = painterResource(R.drawable.ic_two_arrows),
+            contentDescription = "test",
+            tint = MaterialTheme.colorScheme.inverseSurface
+        )
+    }
+
+    return turn
+}
+
+@Preview
+@Composable
+fun ShakeNotesPreview() {
+    shakeNotes()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,6 +228,8 @@ private fun MainNoteItem(
 ) {
     val borderWidth = 1.dp
     val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+
+    var isShowDeleteDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -223,13 +291,22 @@ private fun MainNoteItem(
                         .clip(RoundedCornerShape(25))
                         .alpha(0.25f)
                         .clickable {
-                            item.noteId?.let { id ->
-                                onClickListener.onNoteDelete(id)
-                            }
+                            isShowDeleteDialog = true
                         }
                         .padding(8.dp),
                     imageVector = Icons.Filled.Delete,
                     contentDescription = stringResource(R.string.description_delete)
+                )
+                AlertDialog(
+                    showDialog = isShowDeleteDialog,
+                    onConfirm = {
+                        item.noteId?.let { id ->
+                            onClickListener.onNoteDelete(id)
+                        }
+                    },
+                    onDismiss = {
+                        isShowDeleteDialog = false
+                    }
                 )
             }
         }

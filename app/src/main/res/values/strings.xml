@@ -1,15 +1,24 @@
 <resources>
     <string name="app_name">Papers</string>
-    <string name="title_empty_notes">No notes yet</string>
-    <string name="title_loading">Loading…</string>
+
     <string name="label_write_down_a_note">Write down a note</string>
     <string name="description_add">Add</string>
-    <string name="title_write_down">Write down</string>
-    <string name="title_edit">Edit</string>
     <string name="description_delete">Delete</string>
-    <string name="title_paint">Paint Note</string>
+
     <string name="description_click_for_hashtag">#pressIt</string>
     <string name="description_search">Search</string>
     <string name="description_find">Find</string>
     <string name="description_clear">clear</string>
+
+    <string name="title_empty_notes">No notes yet</string>
+    <string name="title_loading">Loading…</string>
+    <string name="title_write_down">Write down</string>
+    <string name="title_edit">Edit</string>
+    <string name="title_paint">Paint Note</string>
+    <string name="title_new">new</string>
+    <string name="title_old">old</string>
+    <string name="title_dialog_confirmation">Confirmation</string>
+    <string name="title_dialog_question_delete">Are you sure you want to delete the note?</string>
+    <string name="title_yes">Yes</string>
+    <string name="title_no">No</string>
 </resources>

@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Заметочки</string>
-    <string name="title_empty_notes">Пока нет заметок</string>
-    <string name="title_loading">Ожидайте…</string>
+
     <string name="label_write_down_a_note">Запишите заметку</string>
     <string name="description_add">Добавить</string>
-    <string name="title_write_down">Записать</string>
-    <string name="title_edit">Редактировать</string>
     <string name="description_delete">Удалить</string>
-    <string name="title_paint">Paint Note</string>
-    <string name="description_click_for_hashtag">#нажмисюда</string>
+    <string name="description_click_for_hashtag">#нажмиCюда</string>
     <string name="description_search">Поиск</string>
     <string name="description_find">Найти</string>
     <string name="description_clear">Очистить</string>
+
+    <string name="title_empty_notes">Пока нет заметок</string>
+    <string name="title_loading">Ожидайте…</string>
+    <string name="title_write_down">Записать</string>
+    <string name="title_edit">Редактировать</string>
+    <string name="title_paint">Paint Note</string>
+    <string name="title_new">новые</string>
+    <string name="title_old">старые</string>
+    <string name="title_dialog_confirmation">Подтверждение</string>
+    <string name="title_dialog_question_delete">Вы уверены, что хотите удалить заметку?</string>
+    <string name="title_yes">Да</string>
+    <string name="title_no">Нет</string>
 </resources>
