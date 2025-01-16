@@ -185,7 +185,7 @@ fun shakeNotes(): Boolean {
             .clickable {
                 turn = !turn
             }
-            .padding(4.dp),
+            .padding(8.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         AnimationText(sortText, oldSortText)
