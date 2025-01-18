@@ -1,4 +1,4 @@
-package com.implosion.papers.presentation.ui.screen.main.screen.listener
+package com.implosion.papers.presentation.ui.screen.main.screen.listener.menu
 
 import com.implosion.domain.model.TagModel
 

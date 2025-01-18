@@ -11,6 +11,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,7 +51,7 @@ import com.implosion.papers.R
 import com.implosion.papers.presentation.navigation.NavigationScreen
 import com.implosion.papers.presentation.ui.screen.main.MainViewModel
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
-import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagMenuListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
 import com.implosion.papers.presentation.ui.theme.PapersTheme
 import org.koin.androidx.compose.koinViewModel
@@ -87,9 +88,14 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                     .background(
                         MaterialTheme.colorScheme.inverseSurface.copy(alpha = animatedValue)
                     )
-                    .clickable {
-                        focusManager.clearFocus()
-                    }
+                    .clickable(
+
+                        onClick = {
+                            focusManager.clearFocus()
+                        },
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    )
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {

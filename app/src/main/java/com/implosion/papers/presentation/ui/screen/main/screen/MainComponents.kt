@@ -1,5 +1,6 @@
 package com.implosion.papers.presentation.ui.screen.main.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -13,6 +14,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +42,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -69,8 +74,9 @@ import com.implosion.papers.R
 import com.implosion.papers.presentation.ui.component.AlertDialog
 import com.implosion.papers.presentation.ui.component.HashtagPopupComponent
 import com.implosion.papers.presentation.ui.component.AnimationText
+import com.implosion.papers.presentation.ui.component.NotePopupComponent
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
-import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagMenuListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
 import com.implosion.papers.presentation.ui.theme.Typography
 import kotlinx.collections.immutable.ImmutableList
@@ -113,15 +119,19 @@ fun LazyListContent(
     }
 }
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 private fun NotesMainScreen(
     modifier: Modifier,
-    focusManager: FocusManager,
+
     paddingValues: PaddingValues,
     itemsList: List<NoteModel>,
+
     onClickListener: OnNoteClickListener,
     onHashTagListener: OnHashTagListener,
+
     focusRequester: FocusRequester,
+    focusManager: FocusManager,
 
     onPopupShow: (Boolean) -> Unit,
     onHashTagMenuListener: OnHashTagMenuListener
@@ -136,15 +146,19 @@ private fun NotesMainScreen(
         LazyColumn(
             modifier = Modifier,
             contentPadding = paddingValues,
-            //reverseLayout = isShake
         ) {
             items(
-                items = if (isShake) itemsList.reversed() else itemsList,
+                items = if (isShake) {
+                    itemsList.reversed()
+                } else {
+                    itemsList
+                },
                 key = { item -> item.noteId ?: 0 }
             ) { item ->
 
                 MainNoteItem(
-                    modifier = Modifier.animateItem(),
+                    modifier = Modifier
+                        .animateItem(),
                     item = item,
                     onClickListener = onClickListener,
                     onHashTagListener = onHashTagListener,
@@ -157,7 +171,6 @@ private fun NotesMainScreen(
         }
     }
 }
-
 
 @Composable
 fun shakeNotes(): Boolean {
@@ -181,6 +194,7 @@ fun shakeNotes(): Boolean {
     }
     Row(
         modifier = Modifier
+            .padding(top = 2.dp)
             .clip(RoundedCornerShape(35))
             .clickable {
                 turn = !turn
@@ -211,7 +225,7 @@ fun ShakeNotesPreview() {
     shakeNotes()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun MainNoteItem(
     item: NoteModel,
@@ -230,6 +244,11 @@ private fun MainNoteItem(
     val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
 
     var isShowDeleteDialog by remember { mutableStateOf(false) }
+    var isShowNotePopup by remember { mutableStateOf(false) }
+
+//    NotePopupComponent(
+//        showMenu = isShowNotePopup,
+//    )
 
     Column(
         modifier = modifier
@@ -240,11 +259,19 @@ private fun MainNoteItem(
                 border = BorderStroke(borderWidth, borderColor),
                 shape = RoundedCornerShape(25)
             )
-            .clickable {
-                item.noteId?.let { id ->
-                    onClickListener.onNoteClick(id)
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(),
+                onClick = {
+                    item.noteId?.let { id ->
+                        onClickListener.onNoteClick(id)
+                    }
+                },
+                onLongClick = {
+//                    isShowNotePopup = true
+//                    onPopupShow(true)
                 }
-            }
+            )
             .padding(start = 4.dp, end = 4.dp, top = 12.dp),
     ) {
         Row(
@@ -279,7 +306,6 @@ private fun MainNoteItem(
                         style = Typography.bodyLarge,
                     )
                 }
-
             }
 
             Column(
@@ -325,6 +351,11 @@ private fun MainNoteItem(
                 )
             }
     }
+//    DisposableEffect(isShowNotePopup) {
+//        onDispose {
+//            if (!isShowNotePopup) onPopupShow(false)
+//        }
+//    }
 }
 
 @Composable

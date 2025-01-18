@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">笔记</string>
+
+    <string name="label_write_down_a_note">写下笔记</string>
+    <string name="description_add">添加</string>
+    <string name="description_delete">删除</string>
+    <string name="description_click_for_hashtag">#点击这里</string>
+    <string name="description_search">搜索</string>
+    <string name="description_find">寻找</string>
+    <string name="description_clear">清除</string>
+
+    <string name="title_empty_notes">暂无笔记</string>
+    <string name="title_loading">期望…</string>
+    <string name="title_write_down">写下来</string>
+    <string name="title_edit">编辑</string>
+    <string name="title_paint">Paint Note</string>
+    <string name="title_new">新的</string>
+    <string name="title_old">老的</string>
+    <string name="title_dialog_confirmation">确认</string>
+    <string name="title_dialog_question_delete">您确定要删除该笔记吗?</string>
+    <string name="title_yes">是</string>
+    <string name="title_no">不</string>
+</resources>

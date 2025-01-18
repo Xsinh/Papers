@@ -39,7 +39,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
-import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagMenuListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.theme.PurpleGrey40
 import com.implosion.papers.presentation.ui.theme.Red80
 import com.implosion.papers.presentation.ui.theme.Typography
@@ -86,7 +86,7 @@ fun HashtagPopupComponent(
                         verticalArrangement = Arrangement.Bottom,
                     ) {
 
-                        FindItem(onHashTagMenuListener, tagModel)
+                        MarkedDoneItem(onHashTagMenuListener, tagModel)
 
                         Spacer(Modifier.padding(vertical = 2.dp))
 
@@ -103,7 +103,7 @@ fun HashtagPopupComponent(
 }
 
 @Composable
-private fun FindItem(
+private fun MarkedDoneItem(
     onHashTagMenuListener: OnHashTagMenuListener,
     tagModel: TagModel
 ) {
