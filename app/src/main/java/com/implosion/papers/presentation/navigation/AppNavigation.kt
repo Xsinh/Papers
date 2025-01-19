@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.implosion.papers.presentation.ui.screen.details.edit.NoteDetailsEditScreen
-import com.implosion.papers.presentation.ui.screen.details.read.NoteDetailsReadScreen
-import com.implosion.papers.presentation.ui.screen.details.write.NoteDetailsWriteScreen
+import com.implosion.papers.presentation.ui.screen.details.screen.edit.NoteDetailsEditScreen
+import com.implosion.papers.presentation.ui.screen.details.screen.read.NoteDetailsReadScreen
+import com.implosion.papers.presentation.ui.screen.details.screen.write.NoteDetailsWriteScreen
 import com.implosion.papers.presentation.ui.screen.main.screen.MainScreen
 
 @Composable

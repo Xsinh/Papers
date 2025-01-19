@@ -1,7 +1,6 @@
-package com.implosion.papers.presentation.ui.screen.details.write
+package com.implosion.papers.presentation.ui.screen.details.screen.write
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState

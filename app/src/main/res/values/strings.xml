@@ -21,4 +21,6 @@
     <string name="title_dialog_question_delete">Are you sure you want to delete the note?</string>
     <string name="title_yes">Yes</string>
     <string name="title_no">No</string>
+    <string name="title_mark_as_done">Mark as complete</string>
+    <string name="title_remove_the_completed_mark">Remove the completed mark</string>
 </resources>

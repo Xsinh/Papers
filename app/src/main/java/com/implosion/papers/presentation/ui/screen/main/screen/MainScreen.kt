@@ -53,6 +53,7 @@ import com.implosion.papers.presentation.ui.screen.main.MainViewModel
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnNoteItemMenuListener
 import com.implosion.papers.presentation.ui.theme.PapersTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -73,85 +74,104 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
     val animatedValue = rememberBackgroundAnimation(showBackground)
 
     PapersTheme {
-        Scaffold(floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navController?.navigate(NavigationScreen.DetailsWriteNote.route)
-            }) {
-                Icon(
-                    Icons.Filled.Create,
-                    contentDescription = stringResource(R.string.description_add)
-                )
-            }
-        }, content = { paddingValues ->
-            Column(
-                modifier = modifier
-                    .background(
-                        MaterialTheme.colorScheme.inverseSurface.copy(alpha = animatedValue)
+        Scaffold(
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        navController?.navigate(NavigationScreen.DetailsWriteNote.route)
+                    }) {
+                    Icon(
+                        Icons.Filled.Create,
+                        contentDescription = stringResource(R.string.description_add)
                     )
-                    .clickable(
-
-                        onClick = {
-                            focusManager.clearFocus()
-                        },
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    )
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                CustomSearchView(
-                    onValueChange = { query ->
-                        searchQuery = query
-                        viewModel.searchNotes(query)
-                    },
-                    search = searchQuery,
-                    focusManager = focusManager
-                )
-                LazyListContent(
+                }
+            }, content = { paddingValues ->
+                Column(
                     modifier = modifier
-                        .fillMaxSize(),
-                    paddingValues = paddingValues,
-                    noteList = notes,
-                    onClickListener = object : OnNoteClickListener {
-                        override fun onNoteClick(id: Int) {
-                            navController?.navigate("${NavigationScreen.DetailsReadNote.route}/${id}")
+                        .background(
+                            MaterialTheme.colorScheme.inverseSurface.copy(alpha = animatedValue)
+                        )
+                        .clickable(
+                            onClick = {
+                                focusManager.clearFocus()
+                            },
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        )
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    CustomSearchView(
+                        onValueChange = { query ->
+                            searchQuery = query
+                            viewModel.searchNotes(query)
+                        },
+                        search = searchQuery,
+                        focusManager = focusManager
+                    )
+                    LazyListContent(
+                        modifier = modifier
+                            .fillMaxSize(),
+                        paddingValues = paddingValues,
+                        noteList = notes,
+                        onClickListener = object : OnNoteClickListener {
+                            override fun onNoteClick(id: Int) {
+                                navController?.navigate("${NavigationScreen.DetailsReadNote.route}/${id}")
+                            }
+
+                            override fun onNoteLongClick(id: Int) {
+                                showBackground = true
+                            }
+
+                            override fun onNoteLongClickDismiss() {
+                                showBackground = false
+                            }
+
+                            override fun onNoteDelete(id: Int) {
+                                viewModel.deleteNote(id)
+                            }
+                        },
+                        onHashTagListener = object : OnHashTagListener {
+
+                            override fun onHashTagWritten(noteId: Int, tagName: String) {
+                                viewModel.setHashTag(noteId = noteId, hashTag = tagName)
+                            }
+
+                            override fun onHashtagClick(tagId: Int) {
+
+                            }
+                        },
+                        onPopupShow = { isShow ->
+                            showBackground = isShow
+                        },
+                        onHashTagMenuListener = object : OnHashTagMenuListener {
+
+                            override fun findNote(tagModel: TagModel) {
+                                searchQuery = tagModel.name
+                                viewModel.searchNotes(tagModel.name)
+                            }
+
+                            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
+                                viewModel.deleteHashTag(hashTagId, noteId)
+                            }
+
+                            override fun dismissMenu() {
+
+                            }
+                        },
+                        onNoteItemMenuListener = object : OnNoteItemMenuListener {
+
+                            override fun markedNote(isMark: Boolean) {
+
+                            }
+
+                            override fun getMarkStatus(): Boolean {
+                                return false
+                            }
                         }
-
-                        override fun onNoteDelete(id: Int) {
-                            viewModel.deleteNote(id)
-                        }
-                    },
-                    onHashTagListener = object : OnHashTagListener {
-
-                        override fun onHashTagWritten(noteId: Int, tagName: String) {
-                            viewModel.setHashTag(noteId = noteId, hashTag = tagName)
-                        }
-
-                        override fun onHashtagClick(tagId: Int) {
-
-                        }
-                    },
-                    onPopupShow = { isShow ->
-                        showBackground = isShow
-                    },
-                    onHashTagMenuListener = object : OnHashTagMenuListener {
-
-                        override fun findNote(tagModel: TagModel) {
-                            searchQuery = tagModel.name
-                            viewModel.searchNotes(tagModel.name)
-                        }
-
-                        override fun deleteHashTag(hashTagId: Int, noteId: Int) {
-                            viewModel.deleteHashTag(hashTagId, noteId)
-                        }
-
-                        override fun dismissMenu() {
-
-                        }
-                    }
-                )
-            }
-        })
+                    )
+                }
+            })
     }
 }
 
@@ -251,7 +271,7 @@ private fun rememberBackgroundAnimation(showBackground: Boolean): Float {
         animationSpec = tween(durationMillis = 300),
         label = "animated_background"
     )
-    targetValue = if (showBackground) 0.26f else 0f
+    targetValue = if (showBackground) 0.84f else 0f
     return animatedValue
 }
 

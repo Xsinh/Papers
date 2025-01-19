@@ -1,6 +1,9 @@
 package com.implosion.papers.presentation.ui.screen.main.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -10,20 +13,18 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -34,17 +35,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -65,22 +61,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.implosion.domain.model.NoteModel
 import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
-import com.implosion.papers.presentation.ui.component.AlertDialog
-import com.implosion.papers.presentation.ui.component.HashtagPopupComponent
 import com.implosion.papers.presentation.ui.component.AnimationText
-import com.implosion.papers.presentation.ui.component.NotePopupComponent
+import com.implosion.papers.presentation.ui.component.HashtagPopupComponent
+import com.implosion.papers.presentation.ui.screen.main.screen.details.MainNoteItem
+import com.implosion.papers.presentation.ui.screen.main.screen.details.NoteItemDetailsForMenuScreen
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
-import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnNoteItemMenuListener
 import com.implosion.papers.presentation.ui.theme.Typography
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlin.String
 
@@ -96,7 +91,8 @@ fun LazyListContent(
     onHashTagListener: OnHashTagListener,
 
     onPopupShow: (Boolean) -> Unit,
-    onHashTagMenuListener: OnHashTagMenuListener
+    onHashTagMenuListener: OnHashTagMenuListener,
+    onNoteItemMenuListener: OnNoteItemMenuListener,
 ) {
     val itemsList = noteList
     val focusManager = LocalFocusManager.current
@@ -114,11 +110,13 @@ fun LazyListContent(
             onHashTagListener = onHashTagListener,
             focusRequester = focusRequester,
             onPopupShow = onPopupShow,
-            onHashTagMenuListener = onHashTagMenuListener
+            onHashTagMenuListener = onHashTagMenuListener,
+            onNoteItemMenuListener = onNoteItemMenuListener
         )
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationApi::class)
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 private fun NotesMainScreen(
@@ -127,48 +125,99 @@ private fun NotesMainScreen(
     paddingValues: PaddingValues,
     itemsList: List<NoteModel>,
 
-    onClickListener: OnNoteClickListener,
-    onHashTagListener: OnHashTagListener,
-
     focusRequester: FocusRequester,
     focusManager: FocusManager,
 
     onPopupShow: (Boolean) -> Unit,
-    onHashTagMenuListener: OnHashTagMenuListener
+
+    onClickListener: OnNoteClickListener,
+    onHashTagListener: OnHashTagListener,
+    onHashTagMenuListener: OnHashTagMenuListener,
+    onNoteItemMenuListener: OnNoteItemMenuListener,
 ) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(4)),
-        horizontalAlignment = Alignment.End,
-    ) {
-        var isShake = shakeNotes()
+    var selectedSnack by remember { mutableStateOf<NoteModel?>(null) }
 
-        LazyColumn(
-            modifier = Modifier,
-            contentPadding = paddingValues,
+    SharedTransitionLayout(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier
+                .clip(RoundedCornerShape(4)),
+            horizontalAlignment = Alignment.End,
         ) {
-            items(
-                items = if (isShake) {
-                    itemsList.reversed()
-                } else {
-                    itemsList
-                },
-                key = { item -> item.noteId ?: 0 }
-            ) { item ->
+            var isShake = shakeNotes()
 
-                MainNoteItem(
-                    modifier = Modifier
-                        .animateItem(),
-                    item = item,
-                    onClickListener = onClickListener,
-                    onHashTagListener = onHashTagListener,
-                    focusRequester = focusRequester,
-                    focusManager = focusManager,
-                    onPopupShow = onPopupShow,
-                    onHashTagMenuListener = onHashTagMenuListener
-                )
+            LazyColumn(
+                modifier = Modifier,
+                contentPadding = paddingValues,
+            ) {
+                items(
+                    items = if (isShake) {
+                        itemsList.reversed()
+                    } else {
+                        itemsList
+                    },
+                    key = { item -> item.noteId ?: 0 }
+                ) { item ->
+                    AnimatedVisibility(
+                        visible = item != selectedSnack,
+                        enter = fadeIn() + scaleIn(),
+                        exit = fadeOut() + scaleOut(),
+                        modifier = Modifier.animateItem()
+                    ) {
+
+                        MainNoteItem(
+                            modifier = Modifier
+                                .sharedBounds(
+                                    sharedContentState = rememberSharedContentState(key = "${item.noteId}-bounds"),
+                                    animatedVisibilityScope = this@AnimatedVisibility,
+                                    clipInOverlayDuringTransition = OverlayClip(
+                                        RoundedCornerShape(25)
+                                    )
+                                )
+                                .sharedElement(
+                                    state = rememberSharedContentState(key = item.noteId.toString()),
+                                    animatedVisibilityScope = this@AnimatedVisibility
+                                )
+                                .animateItem(),
+                            item = item,
+                            onClickListener = object : OnNoteClickListener {
+                                override fun onNoteClick(id: Int) {
+                                    onClickListener.onNoteClick(id)
+                                }
+
+                                override fun onNoteLongClick(id: Int) {
+                                    selectedSnack = item
+                                    onClickListener.onNoteLongClick(id)
+                                }
+
+                                override fun onNoteLongClickDismiss() {
+                                    onClickListener.onNoteLongClickDismiss()
+                                }
+
+                                override fun onNoteDelete(id: Int) {
+                                    onClickListener.onNoteDelete(id)
+                                }
+
+                            },
+                            onHashTagListener = onHashTagListener,
+                            focusRequester = focusRequester,
+                            focusManager = focusManager,
+                            onPopupShow = onPopupShow,
+                            onHashTagMenuListener = onHashTagMenuListener,
+                        )
+                    }
+                }
             }
+
         }
+        NoteItemDetailsForMenuScreen(
+            item = selectedSnack,
+            modifier = modifier,
+            onClickDismiss = {
+                selectedSnack = null
+                onClickListener.onNoteLongClickDismiss()
+            },
+            noteItemMenuListener = onNoteItemMenuListener
+        )
     }
 }
 
@@ -219,145 +268,6 @@ fun shakeNotes(): Boolean {
     return turn
 }
 
-@Preview
-@Composable
-fun ShakeNotesPreview() {
-    shakeNotes()
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-@Composable
-private fun MainNoteItem(
-    item: NoteModel,
-
-    onClickListener: OnNoteClickListener,
-    onHashTagListener: OnHashTagListener,
-
-    focusRequester: FocusRequester,
-    focusManager: FocusManager = LocalFocusManager.current,
-
-    modifier: Modifier = Modifier,
-    onPopupShow: (Boolean) -> Unit,
-    onHashTagMenuListener: OnHashTagMenuListener
-) {
-    val borderWidth = 1.dp
-    val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-
-    var isShowDeleteDialog by remember { mutableStateOf(false) }
-    var isShowNotePopup by remember { mutableStateOf(false) }
-
-//    NotePopupComponent(
-//        showMenu = isShowNotePopup,
-//    )
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-            .clip(RoundedCornerShape(25))
-            .border(
-                border = BorderStroke(borderWidth, borderColor),
-                shape = RoundedCornerShape(25)
-            )
-            .combinedClickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(),
-                onClick = {
-                    item.noteId?.let { id ->
-                        onClickListener.onNoteClick(id)
-                    }
-                },
-                onLongClick = {
-//                    isShowNotePopup = true
-//                    onPopupShow(true)
-                }
-            )
-            .padding(start = 4.dp, end = 4.dp, top = 12.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .weight(1f)
-            ) {
-                if (item.title.isNullOrEmpty()) {
-                    Text(
-                        text = item.content,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        style = Typography.bodyLarge,
-                    )
-                } else {
-                    Text(
-                        text = item.title.orEmpty(),
-                        maxLines = 3,
-                        style = Typography.labelSmall,
-                        color = MaterialTheme.colorScheme.tertiary
-                    )
-                    Text(
-                        text = item.content,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        style = Typography.bodyLarge,
-                    )
-                }
-            }
-
-            Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.End,
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(25))
-                        .alpha(0.25f)
-                        .clickable {
-                            isShowDeleteDialog = true
-                        }
-                        .padding(8.dp),
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = stringResource(R.string.description_delete)
-                )
-                AlertDialog(
-                    showDialog = isShowDeleteDialog,
-                    onConfirm = {
-                        item.noteId?.let { id ->
-                            onClickListener.onNoteDelete(id)
-                        }
-                    },
-                    onDismiss = {
-                        isShowDeleteDialog = false
-                    }
-                )
-            }
-        }
-
-        item.noteId
-            ?.let { id ->
-                HashtagContainer(
-                    focusRequester = focusRequester,
-                    focusManager = focusManager,
-                    onHashTagListener = onHashTagListener,
-                    noteId = id,
-                    item = item,
-                    hashTagList = item.hashTagList.toImmutableList(),
-                    onPopupShow = onPopupShow,
-                    onHashTagMenuListener = onHashTagMenuListener
-                )
-            }
-    }
-//    DisposableEffect(isShowNotePopup) {
-//        onDispose {
-//            if (!isShowNotePopup) onPopupShow(false)
-//        }
-//    }
-}
-
 @Composable
 fun HashtagContainer(
     item: NoteModel,
@@ -369,11 +279,13 @@ fun HashtagContainer(
     hashTagList: ImmutableList<TagModel>,
 
     onPopupShow: (Boolean) -> Unit,
-    onHashTagMenuListener: OnHashTagMenuListener
+    onHashTagMenuListener: OnHashTagMenuListener,
+    isClickable: Boolean = true,
 ) {
     var hashTagText by remember { mutableStateOf("") }
 
     TextField(
+        enabled = isClickable,
         modifier = Modifier
             .wrapContentSize()
             .focusRequester(focusRequester),
@@ -393,6 +305,7 @@ fun HashtagContainer(
                     items(items = hashTagList, key = { item -> item.tagId }) { chipText ->
 
                         HashTagItem(
+                            isClickable = isClickable,
                             item = item,
                             tagModel = chipText,
                             onPopupShow = onPopupShow,
@@ -425,7 +338,8 @@ fun HashtagContainer(
             unfocusedContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
+            disabledIndicatorColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
         ),
     )
 }
@@ -435,7 +349,8 @@ private fun LazyItemScope.HashTagItem(
     item: NoteModel,
     tagModel: TagModel,
     onPopupShow: (Boolean) -> Unit,
-    onHashTagMenuListener: OnHashTagMenuListener
+    onHashTagMenuListener: OnHashTagMenuListener,
+    isClickable: Boolean = true,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -478,7 +393,7 @@ private fun LazyItemScope.HashTagItem(
         modifier = Modifier
             .animateItem()
             .clip(RoundedCornerShape(25))
-            .clickable {
+            .clickable(enabled = isClickable) {
                 showMenu = true
             }
             .padding(4.dp)
@@ -502,7 +417,6 @@ private fun getPulseAnimation(enabled: Boolean): Float {
         1f
     }
 }
-
 
 @Composable
 fun EmptyNoteScreen() {
@@ -536,7 +450,13 @@ fun EmptyNoteScreen() {
 
 @Preview
 @Composable
-fun NotesMainScreenPreview() {
+private fun ShakeNotesPreview() {
+    shakeNotes()
+}
+
+@Preview
+@Composable
+private fun NotesMainScreenPreview() {
     NotesMainScreen(
         modifier = Modifier,
         focusRequester = FocusRequester(),
@@ -544,6 +464,14 @@ fun NotesMainScreenPreview() {
         paddingValues = PaddingValues(2.dp),
         onClickListener = object : OnNoteClickListener {
             override fun onNoteClick(id: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onNoteLongClick(id: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onNoteLongClickDismiss() {
                 TODO("Not yet implemented")
             }
 
@@ -577,71 +505,8 @@ fun NotesMainScreenPreview() {
             )
         ),
         onPopupShow = {},
-        onHashTagMenuListener = object : OnHashTagMenuListener {
-
-            override fun findNote(tagModel: TagModel) {
-                TODO("Not yet implemented")
-            }
-
-            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun dismissMenu() {
-                TODO("Not yet implemented")
-            }
-        }
-    )
-}
-
-@Preview
-@Composable
-private fun MainNoteItemPreview() {
-    MainNoteItem(
-        item = NoteModel(
-            noteId = 0,
-            title = "Title",
-            content = "Content",
-            createdAt = 0L,
-            updatedAt = 0L
-        ),
-        onClickListener = object : OnNoteClickListener {
-            override fun onNoteClick(id: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onNoteDelete(id: Int) {
-                TODO("Not yet implemented")
-            }
-        },
-        onHashTagListener = object : OnHashTagListener {
-
-            override fun onHashTagWritten(noteId: Int, tagName: String) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onHashtagClick(tagId: Int) {
-                TODO("Not yet implemented")
-            }
-        },
-        focusRequester = FocusRequester(),
-        onPopupShow = {
-
-        },
-        onHashTagMenuListener = object : OnHashTagMenuListener {
-
-            override fun findNote(tagModel: TagModel) {
-                TODO("Not yet implemented")
-            }
-
-            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun dismissMenu() {
-                TODO("Not yet implemented")
-            }
-        }
+        onHashTagMenuListener = TODO(),
+        onNoteItemMenuListener = TODO(),
     )
 }
 
@@ -652,39 +517,11 @@ private fun LazyListContentPreview() {
         modifier = Modifier,
         paddingValues = PaddingValues(),
         noteList = emptyList(),
-        onClickListener = object : OnNoteClickListener {
-            override fun onNoteClick(id: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onNoteDelete(id: Int) {
-                TODO("Not yet implemented")
-            }
-        },
-        onHashTagListener = object : OnHashTagListener {
-
-            override fun onHashTagWritten(noteId: Int, tagName: String) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onHashtagClick(tagId: Int) {
-                TODO("Not yet implemented")
-            }
-        },
+        onClickListener = TODO(),
+        onHashTagListener = TODO(),
         onPopupShow = {},
-        onHashTagMenuListener = object : OnHashTagMenuListener {
-            override fun findNote(tagModel: TagModel) {
-                TODO("Not yet implemented")
-            }
-
-            override fun deleteHashTag(hashTagId: Int, noteId: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun dismissMenu() {
-                TODO("Not yet implemented")
-            }
-        }
+        onHashTagMenuListener = TODO(),
+        onNoteItemMenuListener = TODO()
     )
 }
 

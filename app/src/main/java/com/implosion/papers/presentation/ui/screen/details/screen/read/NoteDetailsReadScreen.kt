@@ -1,31 +1,33 @@
-package com.implosion.papers.presentation.ui.screen.details.edit
+package com.implosion.papers.presentation.ui.screen.details.screen.read
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.implosion.papers.presentation.navigation.NavigationScreen
-import com.implosion.papers.presentation.ui.screen.details.NoteDetailCreateComponent
+import com.implosion.papers.presentation.ui.screen.details.NoteDetailReadComponent
 import com.implosion.papers.presentation.ui.screen.details.NoteDetailsViewModel
 import com.implosion.papers.presentation.ui.theme.PapersTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteDetailsEditScreen(
+fun NoteDetailsReadScreen(
     noteId: Int? = null,
     modifier: Modifier = Modifier,
     navController: NavController? = null
 ) {
     val viewModel: NoteDetailsViewModel = koinViewModel()
     val bottomSheetState = rememberModalBottomSheetState()
-    val focusRequester = remember { FocusRequester() }
+    val scope = rememberCoroutineScope()
 
     noteId?.let { id ->
         viewModel.getNote(id)
@@ -36,17 +38,14 @@ fun NoteDetailsEditScreen(
                 content = {
                     viewModel.note
                         .collectAsState().value?.content?.let { note ->
-                            NoteDetailCreateComponent(
+                            NoteDetailReadComponent(
                                 modifier = modifier,
-                                noteText = note,
-                                focusRequester = focusRequester,
-                                onButtonClick = { note ->
-                                    viewModel
-                                        .editNote(
-                                            content = note
-                                        ).also {
-                                            navController?.navigate(NavigationScreen.Main.route)
-                                        }
+                                note = note,
+                                onButtonClick = {
+                                    scope.launch(Dispatchers.Main) {
+                                        bottomSheetState.hide()
+                                        navController?.navigate("${NavigationScreen.DetailsEditNote.route}/${noteId}")
+                                    }
                                 })
                         }
                 },
@@ -56,4 +55,10 @@ fun NoteDetailsEditScreen(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun NoteDetailsReadScreenPreview() {
+    NoteDetailsReadScreen()
 }

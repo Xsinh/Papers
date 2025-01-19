@@ -21,4 +21,6 @@
     <string name="title_dialog_question_delete">Вы уверены, что хотите удалить заметку?</string>
     <string name="title_yes">Да</string>
     <string name="title_no">Нет</string>
+    <string name="title_mark_as_done">Пометить как выполненную</string>
+    <string name="title_remove_the_completed_mark">Убрать отметку о выполнении</string>
 </resources>
