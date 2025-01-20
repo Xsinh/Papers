@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
  * @param createdAt - time the note was created in Unix timestamp format
  * @param updatedAt - time the note was last updated
  * @param folderId - link to the folder in which the note is located
- * @param isTrashed - flag to move a note to the trash (for future storage options for deleted notes)
+ * @param isMarkedAsComplete - flag to move a note to the trash (for future storage options for deleted notes)
  */
 @Entity(tableName = "notes_table")
 data class NoteEntity(
@@ -21,5 +21,5 @@ data class NoteEntity(
     val createdAt: Long,
     val updatedAt: Long,
     val folderId: Int? = null, // Nullable для корневых заметок
-    val isTrashed: Boolean = false,
+    val isMarkedAsComplete: Boolean = false,
 )

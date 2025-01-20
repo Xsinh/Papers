@@ -2,7 +2,7 @@ package com.implosion.papers.presentation.ui.screen.main.screen.listener.menu
 
 interface OnNoteItemMenuListener {
 
-    fun markedNote(isMark: Boolean)
+    fun markedNote(noteId: Int, isMark: Boolean)
 
-    fun getMarkStatus(): Boolean
+    fun onNoteDelete(id: Int)
 }

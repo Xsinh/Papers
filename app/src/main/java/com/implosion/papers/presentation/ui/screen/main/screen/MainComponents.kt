@@ -163,7 +163,6 @@ private fun NotesMainScreen(
                         exit = fadeOut() + scaleOut(),
                         modifier = Modifier.animateItem()
                     ) {
-
                         MainNoteItem(
                             modifier = Modifier
                                 .sharedBounds(
@@ -180,6 +179,7 @@ private fun NotesMainScreen(
                                 .animateItem(),
                             item = item,
                             onClickListener = object : OnNoteClickListener {
+
                                 override fun onNoteClick(id: Int) {
                                     onClickListener.onNoteClick(id)
                                 }
@@ -193,10 +193,10 @@ private fun NotesMainScreen(
                                     onClickListener.onNoteLongClickDismiss()
                                 }
 
-                                override fun onNoteDelete(id: Int) {
-                                    onClickListener.onNoteDelete(id)
+                                override fun onNoteMenuClick(id: Int) {
+                                    selectedSnack = item
+                                    onClickListener.onNoteLongClick(id)
                                 }
-
                             },
                             onHashTagListener = onHashTagListener,
                             focusRequester = focusRequester,
@@ -475,7 +475,7 @@ private fun NotesMainScreenPreview() {
                 TODO("Not yet implemented")
             }
 
-            override fun onNoteDelete(id: Int) {
+            override fun onNoteMenuClick(id: Int) {
                 TODO("Not yet implemented")
             }
 
@@ -495,13 +495,15 @@ private fun NotesMainScreenPreview() {
                 title = "Title",
                 content = "Content",
                 createdAt = 0L,
-                updatedAt = 0L
+                updatedAt = 0L,
+                isMarkedAsComplete = false,
             ), NoteModel(
                 noteId = 0,
                 title = "Title",
                 content = "Content",
                 createdAt = 0L,
-                updatedAt = 0L
+                updatedAt = 0L,
+                isMarkedAsComplete = false,
             )
         ),
         onPopupShow = {},

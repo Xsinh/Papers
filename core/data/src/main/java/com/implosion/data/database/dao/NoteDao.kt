@@ -10,7 +10,7 @@ import com.implosion.data.database.entity.note.NoteEntity
 
 @Dao
 interface NoteDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert // - юаг блеат
     suspend fun insert(note: NoteEntity)
 
     @Update

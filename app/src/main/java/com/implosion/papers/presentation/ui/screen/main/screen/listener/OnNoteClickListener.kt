@@ -8,5 +8,5 @@ interface OnNoteClickListener {
 
     fun onNoteLongClickDismiss()
 
-    fun onNoteDelete(id: Int)
+    fun onNoteMenuClick(id: Int)
 }

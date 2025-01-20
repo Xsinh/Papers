@@ -11,12 +11,12 @@ android {
 
     defaultConfig {
         applicationId = "com.implosion.papers"
-        versionName = "0.5.1"
+        versionName = "0.6.0"
 
         minSdk = 26
 
         targetSdk = 35
-        versionCode = 7
+        versionCode = 8
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

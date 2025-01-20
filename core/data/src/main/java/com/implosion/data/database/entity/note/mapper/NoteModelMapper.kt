@@ -10,4 +10,5 @@ fun NoteEntity.toDomain(): NoteModel = NoteModel(
     content = content,
     createdAt = createdAt,
     updatedAt = updatedAt,
+    isMarkedAsComplete = isMarkedAsComplete,
 )

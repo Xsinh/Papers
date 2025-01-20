@@ -51,8 +51,8 @@ import com.implosion.papers.R
 import com.implosion.papers.presentation.navigation.NavigationScreen
 import com.implosion.papers.presentation.ui.screen.main.MainViewModel
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
-import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnNoteItemMenuListener
 import com.implosion.papers.presentation.ui.theme.PapersTheme
 import org.koin.androidx.compose.koinViewModel
@@ -70,7 +70,6 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
     }
 
     var showBackground by remember { mutableStateOf(false) }
-
     val animatedValue = rememberBackgroundAnimation(showBackground)
 
     PapersTheme {
@@ -127,7 +126,7 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                                 showBackground = false
                             }
 
-                            override fun onNoteDelete(id: Int) {
+                            override fun onNoteMenuClick(id: Int) {
                                 viewModel.deleteNote(id)
                             }
                         },
@@ -161,12 +160,15 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                         },
                         onNoteItemMenuListener = object : OnNoteItemMenuListener {
 
-                            override fun markedNote(isMark: Boolean) {
-
+                            override fun markedNote(noteId: Int, isMark: Boolean) {
+                                viewModel.markNoteItemAsComplete(
+                                    noteId = noteId,
+                                    isComplete = isMark
+                                )
                             }
 
-                            override fun getMarkStatus(): Boolean {
-                                return false
+                            override fun onNoteDelete(id: Int) {
+                                viewModel.deleteNote(id)
                             }
                         }
                     )
@@ -271,7 +273,7 @@ private fun rememberBackgroundAnimation(showBackground: Boolean): Float {
         animationSpec = tween(durationMillis = 300),
         label = "animated_background"
     )
-    targetValue = if (showBackground) 0.84f else 0f
+    targetValue = if (showBackground) 0.74f else 0f
     return animatedValue
 }
 

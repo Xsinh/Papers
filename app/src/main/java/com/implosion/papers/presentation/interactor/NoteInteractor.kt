@@ -13,4 +13,6 @@ interface NoteInteractor {
     suspend fun searchNotes(query: String): List<NoteModel>
 
     suspend fun deleteNote(noteId: Int)
+
+    suspend fun markNoteItemAsComplete(noteId: Int, isComplete: Boolean)
 }

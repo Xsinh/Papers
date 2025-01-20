@@ -38,4 +38,10 @@ class NoteInteractorImpl(
     override suspend fun deleteNote(noteId: Int) {
         noteRepository.deleteNoteById(noteId)
     }
+
+    override suspend fun markNoteItemAsComplete(noteId: Int, isComplete: Boolean) {
+        val note: NoteModel = noteRepository.getNote(noteId)
+
+        noteRepository.updateNote(note.copy(isMarkedAsComplete = isComplete))
+    }
 }

@@ -27,5 +27,6 @@ fun NoteModel.toDTO(): NoteEntity {
         content = content,
         createdAt = createdAt,
         updatedAt = updatedAt,
+        isMarkedAsComplete = isMarkedAsComplete
     )
 }

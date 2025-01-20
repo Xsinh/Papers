@@ -54,4 +54,11 @@ class MainViewModel(
         val updatedNotes = noteInteractor.getNotesWithTags()
         _noteList.emit(updatedNotes)
     }
+
+    fun markNoteItemAsComplete(noteId: Int, isComplete: Boolean) {
+        viewModelScope.launch {
+            noteInteractor.markNoteItemAsComplete(noteId = noteId, isComplete = isComplete)
+            refreshNotes()
+        }
+    }
 }

@@ -19,19 +19,21 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +47,8 @@ import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnH
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnNoteItemMenuListener
 import com.implosion.papers.presentation.ui.theme.PapersTheme
 import com.implosion.papers.presentation.ui.theme.PurpleGrey40
+import com.implosion.papers.presentation.ui.theme.Red70
+import com.implosion.papers.presentation.ui.theme.Red80
 import com.implosion.papers.presentation.ui.theme.Typography
 
 private val shapeForSharedElement = RoundedCornerShape(16.dp)
@@ -111,18 +115,18 @@ fun SharedTransitionScope.NoteItemDetailsForMenuScreen(
 
                                 }
 
-                                override fun onNoteDelete(id: Int) {
+                                override fun onNoteMenuClick(id: Int) {
 
                                 }
                             },
                             onHashTagListener = object : OnHashTagListener {
 
                                 override fun onHashTagWritten(noteId: Int, tagName: String) {
-                                    TODO("Not yet implemented")
+
                                 }
 
                                 override fun onHashtagClick(tagId: Int) {
-                                    TODO("Not yet implemented")
+
                                 }
                             },
                             focusRequester = FocusRequester(),
@@ -145,10 +149,22 @@ fun SharedTransitionScope.NoteItemDetailsForMenuScreen(
                             },
                         )
 
-                        NoteMenuMarkItem(
-                            noteItemMenuListener = noteItemMenuListener,
-                            onClickDismiss = onClickDismiss,
-                        )
+                        item?.let {
+                            Column(
+                                modifier = Modifier.padding(horizontal = 38.dp)
+                            ) {
+                                NoteMenuMarkItem(
+                                    item = it,
+                                    noteItemMenuListener = noteItemMenuListener,
+                                    onClickDismiss = onClickDismiss,
+                                )
+                                NoteMenuDeleteItem(
+                                    item = it,
+                                    noteItemMenuListener = noteItemMenuListener,
+                                    onClickDismiss = onClickDismiss,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -159,18 +175,19 @@ fun SharedTransitionScope.NoteItemDetailsForMenuScreen(
 @Composable
 fun NoteMenuMarkItem(
     noteItemMenuListener: OnNoteItemMenuListener,
+    item: NoteModel,
     onClickDismiss: () -> Unit
 ) {
-    var isMarkNoteAsDone by remember { mutableStateOf(noteItemMenuListener.getMarkStatus()) }
+    var isMarkNoteAsDone by remember { mutableStateOf(item.isMarkedAsComplete) }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(6.dp)
+            .padding(4.dp)
             .clip(RoundedCornerShape(35))
             .clickable {
                 isMarkNoteAsDone = !isMarkNoteAsDone
-                noteItemMenuListener.markedNote(isMarkNoteAsDone)
+                item.noteId?.let { noteItemMenuListener.markedNote(it, isMarkNoteAsDone) }
                 onClickDismiss()
             }
             .background(MaterialTheme.colorScheme.surface)
@@ -200,7 +217,48 @@ fun NoteMenuMarkItem(
                 )
             },
             style = Typography.bodyLarge,
-            color = PurpleGrey40,
+            // color = PurpleGrey40,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun NoteMenuDeleteItem(
+    noteItemMenuListener: OnNoteItemMenuListener,
+    item: NoteModel,
+    onClickDismiss: () -> Unit
+) {
+    var isMarkNoteAsDone by remember { mutableStateOf(item.isMarkedAsComplete) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .clip(RoundedCornerShape(35))
+            .clickable {
+                isMarkNoteAsDone = !isMarkNoteAsDone
+                item.noteId?.let { noteItemMenuListener.onNoteDelete(it) }
+                onClickDismiss()
+            }
+            .background(Red70)
+            .padding(10.dp),
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Icon(
+            modifier = Modifier
+                .clip(RoundedCornerShape(25)),
+            imageVector = Icons.Filled.Delete,
+            contentDescription = stringResource(R.string.description_delete),
+            tint = Color.White.copy(alpha = 0.7f)
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(start = 8.dp),
+            text = stringResource(R.string.description_delete),
+            style = Typography.bodyLarge,
+            color = Color.White.copy(alpha = 0.8f),
             textAlign = TextAlign.Center
         )
     }
@@ -217,10 +275,20 @@ private fun NoteItemDetailsForMenuScreenPreview() {
                 title = "Title",
                 content = "Content",
                 createdAt = 0L,
-                updatedAt = 0L
+                updatedAt = 0L,
+                isMarkedAsComplete = false
             ),
             onClickDismiss = {},
-            noteItemMenuListener = TODO()
+            noteItemMenuListener = object : OnNoteItemMenuListener {
+
+                override fun markedNote(noteId: Int, isMark: Boolean) {
+
+                }
+
+                override fun onNoteDelete(id: Int) {
+
+                }
+            }
         )
     }
 }

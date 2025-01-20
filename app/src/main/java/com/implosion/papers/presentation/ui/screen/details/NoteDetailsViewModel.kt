@@ -26,6 +26,7 @@ class NoteDetailsViewModel(
                     content = content,
                     createdAt = currentTime,
                     updatedAt = currentTime,
+                    isMarkedAsComplete = false
                 )
             )
         }

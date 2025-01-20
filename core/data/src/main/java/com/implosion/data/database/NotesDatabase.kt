@@ -19,7 +19,7 @@ import com.implosion.data.database.entity.tag.TagEntity
         TagEntity::class,
         NoteTagCrossRef::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class NotesDatabase : RoomDatabase() {
