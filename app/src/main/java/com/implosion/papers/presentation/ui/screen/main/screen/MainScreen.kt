@@ -273,7 +273,7 @@ private fun rememberBackgroundAnimation(showBackground: Boolean): Float {
         animationSpec = tween(durationMillis = 300),
         label = "animated_background"
     )
-    targetValue = if (showBackground) 0.74f else 0f
+    targetValue = if (showBackground) 0.58f else 0f
     return animatedValue
 }
 

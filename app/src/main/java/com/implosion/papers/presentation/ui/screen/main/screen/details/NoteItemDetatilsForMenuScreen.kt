@@ -36,8 +36,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextOverflow.Companion
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import com.implosion.domain.model.NoteModel
 import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
@@ -151,7 +154,7 @@ fun SharedTransitionScope.NoteItemDetailsForMenuScreen(
 
                         item?.let {
                             Column(
-                                modifier = Modifier.padding(horizontal = 38.dp)
+                                modifier = Modifier.padding(horizontal = 28.dp)
                             ) {
                                 NoteMenuMarkItem(
                                     item = it,
@@ -217,7 +220,8 @@ fun NoteMenuMarkItem(
                 )
             },
             style = Typography.bodyLarge,
-            // color = PurpleGrey40,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center
         )
     }
@@ -259,7 +263,9 @@ fun NoteMenuDeleteItem(
             text = stringResource(R.string.description_delete),
             style = Typography.bodyLarge,
             color = Color.White.copy(alpha = 0.8f),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

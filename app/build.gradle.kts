@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.implosion.papers"
-        versionName = "0.6.0"
+        versionName = "0.6.1"
 
         minSdk = 26
 
