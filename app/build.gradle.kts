@@ -11,12 +11,12 @@ android {
 
     defaultConfig {
         applicationId = "com.implosion.papers"
-        versionName = "0.6.1"
+        versionName = "0.6.2"
 
         minSdk = 26
 
         targetSdk = 35
-        versionCode = 8
+        versionCode = 10
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -53,8 +53,6 @@ dependencies {
     api(project(":core:domain"))
 
     implementation(libs.androidx.core.ktx)
-    api (libs.core)
-
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     implementation(libs.androidx.ui)

@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -72,6 +73,7 @@ import com.implosion.papers.presentation.ui.screen.main.screen.details.MainNoteI
 import com.implosion.papers.presentation.ui.screen.main.screen.details.NoteItemDetailsForMenuScreen
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteListListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnNoteItemMenuListener
 import com.implosion.papers.presentation.ui.theme.Typography
@@ -93,6 +95,8 @@ fun LazyListContent(
     onPopupShow: (Boolean) -> Unit,
     onHashTagMenuListener: OnHashTagMenuListener,
     onNoteItemMenuListener: OnNoteItemMenuListener,
+
+    noteListListener: OnNoteListListener,
 ) {
     val itemsList = noteList
     val focusManager = LocalFocusManager.current
@@ -111,7 +115,8 @@ fun LazyListContent(
             focusRequester = focusRequester,
             onPopupShow = onPopupShow,
             onHashTagMenuListener = onHashTagMenuListener,
-            onNoteItemMenuListener = onNoteItemMenuListener
+            onNoteItemMenuListener = onNoteItemMenuListener,
+            noteListListener = noteListListener,
         )
     }
 }
@@ -134,8 +139,13 @@ private fun NotesMainScreen(
     onHashTagListener: OnHashTagListener,
     onHashTagMenuListener: OnHashTagMenuListener,
     onNoteItemMenuListener: OnNoteItemMenuListener,
+
+    noteListListener: OnNoteListListener,
 ) {
     var selectedSnack by remember { mutableStateOf<NoteModel?>(null) }
+
+    val listState = rememberLazyListState()
+    var isShake = noteListListener.isShake
 
     SharedTransitionLayout(modifier = modifier.fillMaxSize()) {
         Column(
@@ -143,11 +153,18 @@ private fun NotesMainScreen(
                 .clip(RoundedCornerShape(4)),
             horizontalAlignment = Alignment.End,
         ) {
-            var isShake = shakeNotes()
+            ShakeNotes(noteListListener = noteListListener)
+
+            LaunchedEffect(isShake) {
+                if (isShake) {
+                    listState.scrollToItem(0) // Скроллим к началу списка
+                }
+            }
 
             LazyColumn(
                 modifier = Modifier,
                 contentPadding = paddingValues,
+                state = listState,
             ) {
                 items(
                     items = if (isShake) {
@@ -222,8 +239,8 @@ private fun NotesMainScreen(
 }
 
 @Composable
-fun shakeNotes(): Boolean {
-    var turn by remember { mutableStateOf(false) }
+fun ShakeNotes(noteListListener: OnNoteListListener) {
+    var turn by remember { mutableStateOf(noteListListener.isShake) }
 
     val sortText =
         if (turn) stringResource(R.string.title_new) else stringResource(R.string.title_old)
@@ -247,6 +264,7 @@ fun shakeNotes(): Boolean {
             .clip(RoundedCornerShape(35))
             .clickable {
                 turn = !turn
+                noteListListener.shakeNoteList(turn)
             }
             .padding(8.dp),
         verticalAlignment = Alignment.Bottom
@@ -264,8 +282,6 @@ fun shakeNotes(): Boolean {
             tint = MaterialTheme.colorScheme.inverseSurface
         )
     }
-
-    return turn
 }
 
 @Composable
@@ -451,7 +467,17 @@ fun EmptyNoteScreen() {
 @Preview
 @Composable
 private fun ShakeNotesPreview() {
-    shakeNotes()
+    ShakeNotes(
+        noteListListener = object : OnNoteListListener {
+            override fun shakeNoteList(isShake: Boolean) {
+                TODO("Not yet implemented")
+            }
+
+            override val isShake: Boolean
+                get() = TODO("Not yet implemented")
+
+        },
+    )
 }
 
 @Preview
@@ -509,6 +535,15 @@ private fun NotesMainScreenPreview() {
         onPopupShow = {},
         onHashTagMenuListener = TODO(),
         onNoteItemMenuListener = TODO(),
+        noteListListener = object : OnNoteListListener {
+            override fun shakeNoteList(isShake: Boolean) {
+                TODO("Not yet implemented")
+            }
+
+            override val isShake: Boolean
+                get() = TODO("Not yet implemented")
+
+        },
     )
 }
 
@@ -523,7 +558,16 @@ private fun LazyListContentPreview() {
         onHashTagListener = TODO(),
         onPopupShow = {},
         onHashTagMenuListener = TODO(),
-        onNoteItemMenuListener = TODO()
+        onNoteItemMenuListener = TODO(),
+        noteListListener = object : OnNoteListListener {
+            override fun shakeNoteList(isShake: Boolean) {
+                TODO("Not yet implemented")
+            }
+
+            override val isShake: Boolean
+                get() = TODO("Not yet implemented")
+
+        },
     )
 }
 

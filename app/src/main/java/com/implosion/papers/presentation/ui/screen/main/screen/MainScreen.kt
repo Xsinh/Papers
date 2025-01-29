@@ -52,6 +52,7 @@ import com.implosion.papers.presentation.navigation.NavigationScreen
 import com.implosion.papers.presentation.ui.screen.main.MainViewModel
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
+import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteListListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnNoteItemMenuListener
 import com.implosion.papers.presentation.ui.theme.PapersTheme
@@ -71,6 +72,8 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
 
     var showBackground by remember { mutableStateOf(false) }
     val animatedValue = rememberBackgroundAnimation(showBackground)
+
+    val isListShake by viewModel.isShakeNoteList.collectAsState()
 
     PapersTheme {
         Scaffold(
@@ -170,6 +173,14 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
                             override fun onNoteDelete(id: Int) {
                                 viewModel.deleteNote(id)
                             }
+                        },
+                        noteListListener = object : OnNoteListListener {
+                            override fun shakeNoteList(isShake: Boolean) {
+                                viewModel.setShakeNoteListState(isShake)
+                            }
+
+                            override val isShake: Boolean
+                                get() = isListShake
                         }
                     )
                 }

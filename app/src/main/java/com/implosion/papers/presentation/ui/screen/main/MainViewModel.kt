@@ -4,21 +4,34 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.implosion.domain.model.NoteModel
 import com.implosion.papers.presentation.interactor.NoteInteractor
+import com.implosion.papers.presentation.provider.SharedPreferenceShakeService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val noteInteractor: NoteInteractor
+    private val noteInteractor: NoteInteractor,
+    private val shakePreferenceService: SharedPreferenceShakeService
 ) : ViewModel() {
 
     private val _noteList = MutableStateFlow<List<NoteModel>>(emptyList())
     val noteList: StateFlow<List<NoteModel>> = _noteList.asStateFlow()
 
+    private val _isShakeNoteList = MutableStateFlow<Boolean>(shakePreferenceService.isNoteListShake)
+    val isShakeNoteList = _isShakeNoteList.asStateFlow()
+
     init {
         viewModelScope.launch {
             refreshNotes()
+        }
+    }
+
+    fun setShakeNoteListState(isShake: Boolean){
+        shakePreferenceService.setNoteListShake(isShake)
+
+        viewModelScope.launch{
+            _isShakeNoteList.emit(shakePreferenceService.isNoteListShake)
         }
     }
 

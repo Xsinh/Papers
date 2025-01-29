@@ -10,7 +10,8 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel {
         MainViewModel(
-            noteInteractor = get()
+            noteInteractor = get(),
+            shakePreferenceService = get()
         )
     }
     viewModel {
