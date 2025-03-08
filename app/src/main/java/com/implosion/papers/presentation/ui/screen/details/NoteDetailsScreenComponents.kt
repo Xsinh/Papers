@@ -24,9 +24,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.implosion.papers.R
@@ -39,15 +37,10 @@ fun NoteDetailCreateComponent(
     focusRequester: FocusRequester,
     noteText: String = "",
 ) {
-    var noteText by remember {
-        mutableStateOf(TextFieldValue(text = noteText, selection = TextRange(noteText.length)))
-    }
+    var noteText by remember { mutableStateOf(noteText) }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
-        noteText = noteText.copy(
-            selection = TextRange(noteText.text.length)
-        )
     }
 
     Column(
@@ -60,9 +53,7 @@ fun NoteDetailCreateComponent(
                 .fillMaxWidth(),
             value = noteText,
             onValueChange = { newText ->
-                noteText = newText.copy(
-                    selection = TextRange(newText.text.length)
-                )
+                noteText = newText
             },
             label = {
                 Text(stringResource(R.string.label_write_down_a_note))
@@ -91,7 +82,7 @@ fun NoteDetailCreateComponent(
             shape = RoundedCornerShape(64),
             border = BorderStroke(borderWidth, borderColor),
             onClick = {
-                onButtonClick.invoke(noteText.text)
+                onButtonClick.invoke(noteText)
             }) {
             Text(stringResource(R.string.title_write_down))
         }
