@@ -1,4 +1,4 @@
-package com.implosion.papers.presentation.ui.screen.main.screen
+package com.implosion.papers.presentation.ui.screen.main.screen.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
@@ -190,7 +190,7 @@ private fun NotesMainScreen(
                                     )
                                 )
                                 .sharedElement(
-                                    state = rememberSharedContentState(key = item.noteId.toString()),
+                                    sharedContentState = rememberSharedContentState(key = item.noteId.toString()),
                                     animatedVisibilityScope = this@AnimatedVisibility
                                 )
                                 .animateItem(),

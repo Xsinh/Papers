@@ -55,7 +55,7 @@ import com.implosion.papers.R
 import com.implosion.papers.presentation.ui.animation.animateCrosses
 import com.implosion.papers.presentation.ui.animation.drawCrosses
 import com.implosion.papers.presentation.ui.animation.generateCrosses
-import com.implosion.papers.presentation.ui.screen.main.screen.HashtagContainer
+import com.implosion.papers.presentation.ui.screen.main.screen.main.HashtagContainer
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnHashTagMenuListener

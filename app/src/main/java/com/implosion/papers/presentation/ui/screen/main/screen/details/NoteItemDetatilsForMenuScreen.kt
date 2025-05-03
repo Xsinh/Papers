@@ -37,10 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.style.TextOverflow.Companion
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import com.implosion.domain.model.NoteModel
 import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
@@ -51,7 +49,6 @@ import com.implosion.papers.presentation.ui.screen.main.screen.listener.menu.OnN
 import com.implosion.papers.presentation.ui.theme.PapersTheme
 import com.implosion.papers.presentation.ui.theme.PurpleGrey40
 import com.implosion.papers.presentation.ui.theme.Red70
-import com.implosion.papers.presentation.ui.theme.Red80
 import com.implosion.papers.presentation.ui.theme.Typography
 
 private val shapeForSharedElement = RoundedCornerShape(16.dp)
