@@ -23,4 +23,13 @@
     <string name="title_no">Нет</string>
     <string name="title_mark_as_done">Пометить как выполненную</string>
     <string name="title_remove_the_completed_mark">Убрать отметку о выполнении</string>
+
+    <string name="title_button_voice">Голос</string>
+    <string name="title_button_text">Текст</string>
+    <string name="title_button_add">Добавить</string>
+
+    <string name="title_voice_record">Запись голоса</string>
+    <string name="title_button_click_to_record">Нажмите для начала записи</string>
+    <string name="title_transcription">Транскрипция</string>
+    <string name="title_to_transcription">Транскрибировать</string>
 </resources>

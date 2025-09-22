@@ -3,7 +3,7 @@ package com.implosion.data.repository
 import com.implosion.data.database.NotesDatabase
 import com.implosion.data.database.entity.note.mapper.toDomain
 import com.implosion.domain.model.NoteModel
-import com.implosion.domain.repository.SearchRepository
+import com.implosion.domain.repository.papers.SearchRepository
 
 class SearchRepositoryImpl(
     private val database: NotesDatabase

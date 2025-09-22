@@ -26,3 +26,5 @@ include(":core:data")
 
 include(":feature")
 include(":feature:markdown")
+include(":feature:summary")
+include(":core:network")

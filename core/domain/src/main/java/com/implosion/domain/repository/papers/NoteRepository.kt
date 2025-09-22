@@ -1,4 +1,4 @@
-package com.implosion.domain.repository
+package com.implosion.domain.repository.papers
 
 import com.implosion.domain.model.NoteModel
 

@@ -5,7 +5,7 @@ import com.implosion.data.database.entity.note.NoteTagCrossRef
 import com.implosion.data.database.entity.tag.TagEntity
 import com.implosion.data.database.entity.tag.mapper.toDomain
 import com.implosion.domain.model.TagModel
-import com.implosion.domain.repository.HashTagRepository
+import com.implosion.domain.repository.papers.HashTagRepository
 
 class HashTagRepositoryImpl(
     private val database: NotesDatabase

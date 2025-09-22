@@ -23,4 +23,13 @@
     <string name="title_no">No</string>
     <string name="title_mark_as_done">Mark as complete</string>
     <string name="title_remove_the_completed_mark">Remove the completed mark</string>
+
+    <string name="title_button_voice">Voice</string>
+    <string name="title_button_text">Text</string>
+    <string name="title_button_add">Add</string>
+
+    <string name="title_voice_record">Voice recording</string>
+    <string name="title_button_click_to_record">Click to start recording</string>
+    <string name="title_transcription">Transcription</string>
+    <string name="title_to_transcription">Transcribe</string>
 </resources>

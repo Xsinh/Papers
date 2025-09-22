@@ -4,7 +4,7 @@ import com.implosion.data.database.NotesDatabase
 import com.implosion.domain.model.NoteModel
 import com.implosion.data.database.entity.note.mapper.toDTO
 import com.implosion.data.database.entity.note.mapper.toDomain
-import com.implosion.domain.repository.NoteRepository
+import com.implosion.domain.repository.papers.NoteRepository
 
 class NoteRepositoryImpl(
     private val database: NotesDatabase

@@ -17,9 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -46,6 +44,7 @@ import androidx.navigation.NavController
 import com.implosion.domain.model.TagModel
 import com.implosion.papers.R
 import com.implosion.papers.presentation.navigation.NavigationScreen
+import com.implosion.papers.presentation.ui.component.AnimatedExpandableFab
 import com.implosion.papers.presentation.ui.screen.main.MainViewModel
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnHashTagListener
 import com.implosion.papers.presentation.ui.screen.main.screen.listener.OnNoteClickListener
@@ -75,15 +74,14 @@ fun MainScreen(modifier: Modifier = Modifier, navController: NavController? = nu
     PapersTheme {
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
+                AnimatedExpandableFab(
+                    onVoiceClick = {
+                        navController?.navigate(NavigationScreen.VoiceScreen.route)
+                    },
+                    onTextClick = {
                         navController?.navigate(NavigationScreen.DetailsWriteNote.route)
-                    }) {
-                    Icon(
-                        Icons.Filled.Create,
-                        contentDescription = stringResource(R.string.description_add)
-                    )
-                }
+                    },
+                )
             }, content = { paddingValues ->
                 Column(
                     modifier = modifier

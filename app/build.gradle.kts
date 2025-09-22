@@ -3,20 +3,21 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.implosion.papers"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.implosion.papers"
-        versionName = "0.6.5"
+        versionName = "0.7.0"
 
         minSdk = 26
 
-        targetSdk = 35
-        versionCode = 13
+        targetSdk = 36
+        versionCode = 14
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -33,12 +34,14 @@ android {
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "11"
+
+    kotlin {
+        jvmToolchain(21)
     }
 
     packaging {
@@ -51,14 +54,18 @@ android {
 dependencies {
     implementation(project(":core:data"))
     api(project(":core:domain"))
+    api(project(":core:network"))
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -75,6 +82,8 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     implementation (libs.kotlinx.coroutines.android)
+
+    implementation(libs.accompanist.permissions)
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

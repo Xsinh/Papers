@@ -4,6 +4,10 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.implosion.data.database.NotesDatabase
+import com.implosion.data.remote.api.summarization.OllamaApi
+import com.implosion.data.remote.api.summarization.OllamaApiImpl
+import com.implosion.data.remote.api.transcription.TranscriptionApi
+import com.implosion.data.remote.api.transcription.TranscriptionApiImpl
 import org.koin.dsl.module
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -55,4 +59,8 @@ val databaseModule = module {
         get<NotesDatabase>().tagDao()
         get<NotesDatabase>().noteTagCrossRefDao()
     }
+
+    single<OllamaApi> { OllamaApiImpl(get()) }
+
+    single<TranscriptionApi> { TranscriptionApiImpl(get()) }
 }

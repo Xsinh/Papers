@@ -1,9 +1,9 @@
 package com.implosion.papers.presentation.interactor
 
 import com.implosion.domain.model.NoteModel
-import com.implosion.domain.repository.HashTagRepository
-import com.implosion.domain.repository.NoteRepository
-import com.implosion.domain.repository.SearchRepository
+import com.implosion.domain.repository.papers.HashTagRepository
+import com.implosion.domain.repository.papers.NoteRepository
+import com.implosion.domain.repository.papers.SearchRepository
 
 class NoteInteractorImpl(
     private val noteRepository: NoteRepository,

@@ -23,4 +23,13 @@
     <string name="title_no">不</string>
     <string name="title_mark_as_done">标记为已完成</string>
     <string name="title_remove_the_completed_mark">取消勾选已完成</string>
+
+    <string name="title_button_voice">嗓音</string>
+    <string name="title_button_text">文本</string>
+    <string name="title_button_add">添加</string>
+
+    <string name="title_voice_record">录音</string>
+    <string name="title_button_click_to_record">点击开始录制</string>
+    <string name="title_transcription">转录</string>
+    <string name="title_to_transcription">录制</string>
 </resources>

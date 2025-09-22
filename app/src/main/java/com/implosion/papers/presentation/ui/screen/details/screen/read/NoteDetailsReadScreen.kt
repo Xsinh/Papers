@@ -21,8 +21,8 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteDetailsReadScreen(
-    noteId: Int? = null,
     modifier: Modifier = Modifier,
+    noteId: Int? = null,
     navController: NavController? = null
 ) {
     val viewModel: NoteDetailsViewModel = koinViewModel()
@@ -42,6 +42,7 @@ fun NoteDetailsReadScreen(
                                 modifier = modifier,
                                 note = note,
                                 onButtonClick = {
+                                    //viewModel.magic() на будущее
                                     scope.launch(Dispatchers.Main) {
                                         bottomSheetState.hide()
                                         navController?.navigate("${NavigationScreen.DetailsEditNote.route}/${noteId}")

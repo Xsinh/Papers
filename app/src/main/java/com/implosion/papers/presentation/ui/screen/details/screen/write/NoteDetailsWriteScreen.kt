@@ -21,7 +21,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun NoteDetailsWriteScreen(modifier: Modifier = Modifier, navController: NavController? = null) {
+fun NoteDetailsWriteScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController? = null,
+    previewText: String = ""
+) {
     val viewModel: NoteDetailsViewModel = koinViewModel()
 
     val bottomSheetState = rememberModalBottomSheetState(
@@ -43,6 +47,7 @@ fun NoteDetailsWriteScreen(modifier: Modifier = Modifier, navController: NavCont
             sheetState = bottomSheetState,
             content = {
                 NoteDetailCreateComponent(
+                    noteText = previewText,
                     modifier = modifier,
                     focusRequester = focusRequester,
                     onButtonClick = { note ->

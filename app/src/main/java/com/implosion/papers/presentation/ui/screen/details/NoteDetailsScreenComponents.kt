@@ -1,5 +1,6 @@
 package com.implosion.papers.presentation.ui.screen.details
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -73,7 +75,7 @@ fun NoteDetailCreateComponent(
         )
 
         val borderWidth = 1.dp
-        val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
         OutlinedButton(
             modifier = Modifier
                 .align(Alignment.End)
@@ -98,22 +100,24 @@ fun NoteDetailReadComponent(
     Column(
         modifier = modifier
     ) {
-        Text(
-            modifier = Modifier
-                .padding(16.dp)
-                .wrapContentHeight()
-                .fillMaxWidth(),
-            text = note,
-            style = Typography.bodyLarge,
-        )
+        SelectionContainer {
+            Text(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                text = note,
+                style = Typography.bodyLarge,
+            )
+        }
 
         val borderWidth = 1.dp
         val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+
         OutlinedButton(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(4.dp),
-
             shape = RoundedCornerShape(64),
             border = BorderStroke(borderWidth, borderColor),
             onClick = {
@@ -124,6 +128,7 @@ fun NoteDetailReadComponent(
     }
 }
 
+@SuppressLint("RememberInComposition")
 @Preview
 @Composable
 private fun NoteDetailComponentPreview() {
